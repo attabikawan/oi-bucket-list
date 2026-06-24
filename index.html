@@ -1157,642 +1157,640 @@
 
     updatePreview();
 
-   <script>
-  const canvas = document.getElementById("funnelCanvas");
-  const ctx = canvas.getContext("2d");
-  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const canvas = document.getElementById("funnelCanvas");
+    const ctx = canvas.getContext("2d");
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  let width = 0;
-  let height = 0;
-  let dpr = 1;
-  let particles = [];
-  let ambientNodes = [];
-  let currentGeometry = null;
+    let width = 0;
+    let height = 0;
+    let dpr = 1;
+    let particles = [];
+    let ambientNodes = [];
+    let currentGeometry = null;
 
-  function lerp(a, b, t) {
-    return a + (b - a) * t;
-  }
-
-  function smoothstep(t) {
-    return t * t * (3 - 2 * t);
-  }
-
-  function cubic(p0, p1, p2, p3, t) {
-    const u = 1 - t;
-    const tt = t * t;
-    const uu = u * u;
-    const uuu = uu * u;
-    const ttt = tt * t;
-
-    return {
-      x: uuu * p0.x + 3 * uu * t * p1.x + 3 * u * tt * p2.x + ttt * p3.x,
-      y: uuu * p0.y + 3 * uu * t * p1.y + 3 * u * tt * p2.y + ttt * p3.y
-    };
-  }
-
-  function horizontalFunnelGeometry() {
-    const centerY = height * 0.54;
-    const leftX = -width * 0.08;
-    const rightX = width * 1.04;
-    const throatX = width * 0.64;
-
-    const startHalf = Math.min(height * 0.34, 228);
-    const throatHalf = Math.max(62, Math.min(height * 0.10, 86));
-    const endHalf = Math.min(height * 0.22, 148);
-
-    function halfAt(x) {
-      if (x <= throatX) {
-        const t = smoothstep((x - leftX) / (throatX - leftX));
-        return lerp(startHalf, throatHalf, t);
-      }
-
-      const t = smoothstep((x - throatX) / (rightX - throatX));
-      return lerp(throatHalf, endHalf, t);
+    function lerp(a, b, t) {
+      return a + (b - a) * t;
     }
 
-    function topAt(x) {
-      return centerY - halfAt(x) + Math.sin((x / width) * Math.PI * 1.45) * 3;
+    function smoothstep(t) {
+      return t * t * (3 - 2 * t);
     }
 
-    function bottomAt(x) {
-      return centerY + halfAt(x) + Math.sin((x / width) * Math.PI * 1.45 + 0.9) * 3;
+    function cubic(p0, p1, p2, p3, t) {
+      const u = 1 - t;
+      const tt = t * t;
+      const uu = u * u;
+      const uuu = uu * u;
+      const ttt = tt * t;
+
+      return {
+        x: uuu * p0.x + 3 * uu * t * p1.x + 3 * u * tt * p2.x + ttt * p3.x,
+        y: uuu * p0.y + 3 * uu * t * p1.y + 3 * u * tt * p2.y + ttt * p3.y
+      };
     }
 
-    const topTs = [0.08, 0.17, 0.27, 0.39, 0.52, 0.65, 0.78, 0.90];
-    const bottomTs = [0.11, 0.22, 0.33, 0.46, 0.59, 0.72, 0.84, 0.95];
+    function horizontalFunnelGeometry() {
+      const centerY = height * 0.54;
+      const leftX = -width * 0.08;
+      const rightX = width * 1.04;
+      const throatX = width * 0.64;
 
-    const nodes = [];
+      const startHalf = Math.min(height * 0.34, 228);
+      const throatHalf = Math.max(62, Math.min(height * 0.10, 86));
+      const endHalf = Math.min(height * 0.22, 148);
 
-    topTs.forEach((t, idx) => {
-      const x = lerp(leftX + 60, rightX - 60, t);
-      nodes.push({
-        x,
-        y: topAt(x),
-        side: "top",
-        hue: idx % 3 === 0 ? "gold" : idx % 3 === 1 ? "cyan" : "teal"
-      });
-    });
-
-    bottomTs.forEach((t, idx) => {
-      const x = lerp(leftX + 60, rightX - 60, t);
-      nodes.push({
-        x,
-        y: bottomAt(x),
-        side: "bottom",
-        hue: idx % 3 === 0 ? "teal" : idx % 3 === 1 ? "gold" : "cyan"
-      });
-    });
-
-    return {
-      centerY,
-      leftX,
-      rightX,
-      throatX,
-      startHalf,
-      throatHalf,
-      endHalf,
-      halfAt,
-      topAt,
-      bottomAt,
-      nodes
-    };
-  }
-
-  function colorForHue(hue, alpha) {
-    if (hue === "gold") return `rgba(242, 198, 109, ${alpha})`;
-    if (hue === "teal") return `rgba(85, 217, 203, ${alpha})`;
-    return `rgba(128, 232, 255, ${alpha})`;
-  }
-
-  function nodeIndexes(side, minX = -Infinity, maxX = Infinity) {
-    if (!currentGeometry) return [0];
-
-    const matches = currentGeometry.nodes
-      .map((node, index) => ({ node, index }))
-      .filter(item => item.node.side === side && item.node.x >= minX && item.node.x <= maxX)
-      .map(item => item.index);
-
-    if (matches.length) return matches;
-
-    return currentGeometry.nodes
-      .map((node, index) => ({ node, index }))
-      .filter(item => item.node.side === side)
-      .map(item => item.index);
-  }
-
-  function randomNodeIndex(side, minX = -Infinity, maxX = Infinity) {
-    const indexes = nodeIndexes(side, minX, maxX);
-    return indexes[Math.floor(Math.random() * indexes.length)];
-  }
-
-  function insidePoint(g, x, lane) {
-    const top = g.topAt(x);
-    const bottom = g.bottomAt(x);
-
-    return {
-      x,
-      y: lerp(top, bottom, 0.5 + lane * 0.28)
-    };
-  }
-
-  function createParticle() {
-    const r = Math.random();
-
-    let type = "through";
-
-    if (r < 0.30) type = "through";
-    else if (r < 0.41) type = "topBorderJoin";
-    else if (r < 0.52) type = "bottomBorderJoin";
-    else if (r < 0.62) type = "topInto";
-    else if (r < 0.72) type = "bottomInto";
-    else if (r < 0.82) type = "insideOutTop";
-    else if (r < 0.92) type = "insideOutBottom";
-    else type = Math.random() > 0.5 ? "topTerminate" : "bottomTerminate";
-
-    let targetNode = 0;
-
-    if (type.startsWith("top")) {
-      targetNode = randomNodeIndex("top");
-    }
-
-    if (type.startsWith("bottom")) {
-      targetNode = randomNodeIndex("bottom");
-    }
-
-    if (type === "insideOutTop") {
-      targetNode = randomNodeIndex("top", width * 0.32, width * 0.96);
-    }
-
-    if (type === "insideOutBottom") {
-      targetNode = randomNodeIndex("bottom", width * 0.32, width * 0.96);
-    }
-
-    const isInsideOnly = type === "through";
-    const isOutbound = type === "insideOutTop" || type === "insideOutBottom";
-    const isTerminate = type === "topTerminate" || type === "bottomTerminate";
-
-    let speed;
-
-    if (isInsideOnly) {
-      speed = Math.random() * 0.0072 + 0.0062;
-    } else if (isOutbound) {
-      speed = Math.random() * 0.0024 + 0.0032;
-    } else if (isTerminate) {
-      speed = Math.random() * 0.0012 + 0.0013;
-    } else {
-      speed = Math.random() * 0.0018 + 0.0018;
-    }
-
-    const target = currentGeometry?.nodes?.[targetNode];
-    let startX = currentGeometry ? lerp(currentGeometry.leftX + 120, width * 0.42, Math.random()) : width * 0.22;
-
-    if (target && isOutbound) {
-      const maxStart = Math.max(currentGeometry.leftX + 120, target.x - width * 0.24);
-      startX = lerp(currentGeometry.leftX + 110, maxStart, Math.random());
-    }
-
-    return {
-      type,
-      t: Math.random(),
-      speed,
-      size: Math.random() * 2.2 + 1.2,
-      lane: Math.random() * 2 - 1,
-      targetNode,
-      startX,
-      joinT: Math.random() * 0.74 + 0.12,
-      xOffset: (Math.random() - 0.5) * 360,
-      phase: Math.random() * Math.PI * 2,
-      alpha: Math.random() * 0.34 + 0.54,
-      hue: Math.random() > 0.56 ? "cyan" : Math.random() > 0.45 ? "gold" : "teal"
-    };
-  }
-
-  function resizeCanvas() {
-    dpr = Math.min(window.devicePixelRatio || 1, 2);
-    width = window.innerWidth;
-    height = window.innerHeight;
-
-    canvas.width = Math.floor(width * dpr);
-    canvas.height = Math.floor(height * dpr);
-    canvas.style.width = `${width}px`;
-    canvas.style.height = `${height}px`;
-
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-    currentGeometry = horizontalFunnelGeometry();
-
-    const particleCount = Math.min(178, Math.max(96, Math.floor(width * height / 13200)));
-    particles = Array.from({ length: particleCount }, createParticle);
-
-    const nodeCount = Math.min(42, Math.max(24, Math.floor(width * height / 56000)));
-    ambientNodes = Array.from({ length: nodeCount }, () => ({
-      x: Math.random() * width,
-      y: Math.random() * height,
-      r: Math.random() * 2.0 + 1.0,
-      a: Math.random() * 0.20 + 0.08,
-      vx: (Math.random() - 0.5) * 0.065,
-      vy: (Math.random() - 0.5) * 0.065
-    }));
-  }
-
-  function drawAmbientNodes() {
-    ambientNodes.forEach((n, i) => {
-      if (!reduceMotion) {
-        n.x += n.vx;
-        n.y += n.vy;
-      }
-
-      if (n.x < -40) n.x = width + 40;
-      if (n.x > width + 40) n.x = -40;
-      if (n.y < -40) n.y = height + 40;
-      if (n.y > height + 40) n.y = -40;
-
-      ctx.beginPath();
-      ctx.arc(n.x, n.y, n.r * 4.5, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(128, 232, 255, ${n.a * 0.10})`;
-      ctx.fill();
-
-      ctx.beginPath();
-      ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(128, 232, 255, ${n.a})`;
-      ctx.fill();
-
-      for (let j = i + 1; j < ambientNodes.length; j++) {
-        const q = ambientNodes[j];
-        const dx = n.x - q.x;
-        const dy = n.y - q.y;
-        const d = Math.sqrt(dx * dx + dy * dy);
-
-        if (d < 165) {
-          ctx.beginPath();
-          ctx.moveTo(n.x, n.y);
-          ctx.lineTo(q.x, q.y);
-          ctx.strokeStyle = `rgba(255, 255, 255, ${(1 - d / 165) * 0.052})`;
-          ctx.lineWidth = 1;
-          ctx.stroke();
+      function halfAt(x) {
+        if (x <= throatX) {
+          const t = smoothstep((x - leftX) / (throatX - leftX));
+          return lerp(startHalf, throatHalf, t);
         }
+
+        const t = smoothstep((x - throatX) / (rightX - throatX));
+        return lerp(throatHalf, endHalf, t);
       }
-    });
-  }
 
-  function drawHorizontalFunnel(g) {
-    ctx.save();
+      function topAt(x) {
+        return centerY - halfAt(x) + Math.sin((x / width) * Math.PI * 1.45) * 3;
+      }
 
-    const fillGrad = ctx.createLinearGradient(g.leftX, 0, g.rightX, 0);
-    fillGrad.addColorStop(0, "rgba(255,255,255,0.014)");
-    fillGrad.addColorStop(0.5, "rgba(128,232,255,0.020)");
-    fillGrad.addColorStop(1, "rgba(242,198,109,0.016)");
+      function bottomAt(x) {
+        return centerY + halfAt(x) + Math.sin((x / width) * Math.PI * 1.45 + 0.9) * 3;
+      }
 
-    const strokeGrad = ctx.createLinearGradient(g.leftX, 0, g.rightX, 0);
-    strokeGrad.addColorStop(0, "rgba(128,232,255,0.17)");
-    strokeGrad.addColorStop(0.52, "rgba(255,255,255,0.14)");
-    strokeGrad.addColorStop(1, "rgba(242,198,109,0.17)");
+      const topTs = [0.08, 0.17, 0.27, 0.39, 0.52, 0.65, 0.78, 0.90];
+      const bottomTs = [0.11, 0.22, 0.33, 0.46, 0.59, 0.72, 0.84, 0.95];
 
-    ctx.beginPath();
-    ctx.moveTo(g.leftX, g.topAt(g.leftX));
+      const nodes = [];
 
-    for (let x = g.leftX; x <= g.rightX; x += 18) {
-      ctx.lineTo(x, g.topAt(x));
-    }
+      topTs.forEach((t, idx) => {
+        const x = lerp(leftX + 60, rightX - 60, t);
+        nodes.push({
+          x,
+          y: topAt(x),
+          side: "top",
+          hue: idx % 3 === 0 ? "gold" : idx % 3 === 1 ? "cyan" : "teal"
+        });
+      });
 
-    for (let x = g.rightX; x >= g.leftX; x -= 18) {
-      ctx.lineTo(x, g.bottomAt(x));
-    }
+      bottomTs.forEach((t, idx) => {
+        const x = lerp(leftX + 60, rightX - 60, t);
+        nodes.push({
+          x,
+          y: bottomAt(x),
+          side: "bottom",
+          hue: idx % 3 === 0 ? "teal" : idx % 3 === 1 ? "gold" : "cyan"
+        });
+      });
 
-    ctx.closePath();
-    ctx.fillStyle = fillGrad;
-    ctx.fill();
-    ctx.strokeStyle = strokeGrad;
-    ctx.lineWidth = 1.6;
-    ctx.stroke();
-
-    ctx.beginPath();
-    for (let x = g.leftX; x <= g.rightX; x += 12) {
-      const y = lerp(g.topAt(x), g.bottomAt(x), 0.32) + Math.sin(x * 0.012) * 4;
-      if (x === g.leftX) ctx.moveTo(x, y);
-      else ctx.lineTo(x, y);
-    }
-    ctx.strokeStyle = "rgba(128,232,255,0.065)";
-    ctx.lineWidth = 1;
-    ctx.stroke();
-
-    ctx.beginPath();
-    for (let x = g.leftX; x <= g.rightX; x += 12) {
-      const y = lerp(g.topAt(x), g.bottomAt(x), 0.68) - Math.cos(x * 0.013) * 4;
-      if (x === g.leftX) ctx.moveTo(x, y);
-      else ctx.lineTo(x, y);
-    }
-    ctx.strokeStyle = "rgba(255,255,255,0.052)";
-    ctx.lineWidth = 1;
-    ctx.stroke();
-
-    g.nodes.forEach((node, i) => {
-      const pulse = 0.84 + Math.sin(Date.now() * 0.0032 + i) * 0.16;
-      const glow = 15 + pulse * 8;
-      const core = 3.2 + pulse * 0.8;
-
-      ctx.beginPath();
-      ctx.arc(node.x, node.y, glow, 0, Math.PI * 2);
-      ctx.fillStyle = colorForHue(node.hue, 0.11);
-      ctx.fill();
-
-      ctx.beginPath();
-      ctx.arc(node.x, node.y, core * 2.2, 0, Math.PI * 2);
-      ctx.fillStyle = colorForHue(node.hue, 0.38);
-      ctx.fill();
-
-      ctx.beginPath();
-      ctx.arc(node.x, node.y, core, 0, Math.PI * 2);
-      ctx.fillStyle = colorForHue(node.hue, 0.95);
-      ctx.fill();
-
-      ctx.beginPath();
-      ctx.arc(node.x - 0.7, node.y - 0.7, core * 0.45, 0, Math.PI * 2);
-      ctx.fillStyle = "rgba(255,255,255,0.88)";
-      ctx.fill();
-    });
-
-    ctx.restore();
-  }
-
-  function particlePoint(p, g) {
-    const target = g.nodes[p.targetNode % g.nodes.length];
-
-    if (p.type === "through") {
-      const start = {
-        x: -100,
-        y: g.centerY + p.lane * (g.startHalf * 0.50)
+      return {
+        centerY,
+        leftX,
+        rightX,
+        throatX,
+        startHalf,
+        throatHalf,
+        endHalf,
+        halfAt,
+        topAt,
+        bottomAt,
+        nodes
       };
-
-      const end = {
-        x: width + 120,
-        y: g.centerY + p.lane * (g.endHalf * 0.45)
-      };
-
-      return cubic(
-        start,
-        {
-          x: width * 0.24,
-          y: g.centerY + p.lane * (g.startHalf * 0.24) + Math.sin(p.phase) * 28
-        },
-        {
-          x: width * 0.74,
-          y: g.centerY + p.lane * (g.endHalf * 0.18) - Math.cos(p.phase) * 24
-        },
-        end,
-        p.t
-      );
     }
 
-    if (p.type === "topBorderJoin" || p.type === "bottomBorderJoin") {
-      const isTop = p.type === "topBorderJoin";
-      const split = 0.62;
+    function colorForHue(hue, alpha) {
+      if (hue === "gold") return `rgba(242, 198, 109, ${alpha})`;
+      if (hue === "teal") return `rgba(85, 217, 203, ${alpha})`;
+      return `rgba(128, 232, 255, ${alpha})`;
+    }
 
-      const start = {
-        x: target.x + p.xOffset,
-        y: isTop ? -90 : height + 90
+    function nodeIndexes(side, minX = -Infinity, maxX = Infinity) {
+      if (!currentGeometry) return [0];
+
+      const matches = currentGeometry.nodes
+        .map((node, index) => ({ node, index }))
+        .filter(item => item.node.side === side && item.node.x >= minX && item.node.x <= maxX)
+        .map(item => item.index);
+
+      if (matches.length) return matches;
+
+      return currentGeometry.nodes
+        .map((node, index) => ({ node, index }))
+        .filter(item => item.node.side === side)
+        .map(item => item.index);
+    }
+
+    function randomNodeIndex(side, minX = -Infinity, maxX = Infinity) {
+      const indexes = nodeIndexes(side, minX, maxX);
+      return indexes[Math.floor(Math.random() * indexes.length)];
+    }
+
+    function insidePoint(g, x, lane) {
+      const top = g.topAt(x);
+      const bottom = g.bottomAt(x);
+
+      return {
+        x,
+        y: lerp(top, bottom, 0.5 + lane * 0.28)
       };
+    }
 
-      if (p.t <= split) {
-        const u = p.t / split;
+    function createParticle() {
+      const r = Math.random();
+
+      let type = "through";
+
+      if (r < 0.30) type = "through";
+      else if (r < 0.41) type = "topBorderJoin";
+      else if (r < 0.52) type = "bottomBorderJoin";
+      else if (r < 0.62) type = "topInto";
+      else if (r < 0.72) type = "bottomInto";
+      else if (r < 0.82) type = "insideOutTop";
+      else if (r < 0.92) type = "insideOutBottom";
+      else type = Math.random() > 0.5 ? "topTerminate" : "bottomTerminate";
+
+      let targetNode = 0;
+
+      if (type.startsWith("top")) {
+        targetNode = randomNodeIndex("top");
+      }
+
+      if (type.startsWith("bottom")) {
+        targetNode = randomNodeIndex("bottom");
+      }
+
+      if (type === "insideOutTop") {
+        targetNode = randomNodeIndex("top", width * 0.32, width * 0.96);
+      }
+
+      if (type === "insideOutBottom") {
+        targetNode = randomNodeIndex("bottom", width * 0.32, width * 0.96);
+      }
+
+      const isInsideOnly = type === "through";
+      const isOutbound = type === "insideOutTop" || type === "insideOutBottom";
+      const isTerminate = type === "topTerminate" || type === "bottomTerminate";
+
+      let speed;
+
+      if (isInsideOnly) {
+        speed = Math.random() * 0.0072 + 0.0062;
+      } else if (isOutbound) {
+        speed = Math.random() * 0.0024 + 0.0032;
+      } else if (isTerminate) {
+        speed = Math.random() * 0.0012 + 0.0013;
+      } else {
+        speed = Math.random() * 0.0018 + 0.0018;
+      }
+
+      const target = currentGeometry?.nodes?.[targetNode];
+      let startX = currentGeometry ? lerp(currentGeometry.leftX + 120, width * 0.42, Math.random()) : width * 0.22;
+
+      if (target && isOutbound) {
+        const maxStart = Math.max(currentGeometry.leftX + 120, target.x - width * 0.24);
+        startX = lerp(currentGeometry.leftX + 110, maxStart, Math.random());
+      }
+
+      return {
+        type,
+        t: Math.random(),
+        speed,
+        size: Math.random() * 2.2 + 1.2,
+        lane: Math.random() * 2 - 1,
+        targetNode,
+        startX,
+        joinT: Math.random() * 0.74 + 0.12,
+        xOffset: (Math.random() - 0.5) * 360,
+        phase: Math.random() * Math.PI * 2,
+        alpha: Math.random() * 0.34 + 0.54,
+        hue: Math.random() > 0.56 ? "cyan" : Math.random() > 0.45 ? "gold" : "teal"
+      };
+    }
+
+    function resizeCanvas() {
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      width = window.innerWidth;
+      height = window.innerHeight;
+
+      canvas.width = Math.floor(width * dpr);
+      canvas.height = Math.floor(height * dpr);
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
+
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      currentGeometry = horizontalFunnelGeometry();
+
+      const particleCount = Math.min(178, Math.max(96, Math.floor(width * height / 13200)));
+      particles = Array.from({ length: particleCount }, createParticle);
+
+      const nodeCount = Math.min(42, Math.max(24, Math.floor(width * height / 56000)));
+      ambientNodes = Array.from({ length: nodeCount }, () => ({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        r: Math.random() * 2.0 + 1.0,
+        a: Math.random() * 0.20 + 0.08,
+        vx: (Math.random() - 0.5) * 0.065,
+        vy: (Math.random() - 0.5) * 0.065
+      }));
+    }
+
+    function drawAmbientNodes() {
+      ambientNodes.forEach((n, i) => {
+        if (!reduceMotion) {
+          n.x += n.vx;
+          n.y += n.vy;
+        }
+
+        if (n.x < -40) n.x = width + 40;
+        if (n.x > width + 40) n.x = -40;
+        if (n.y < -40) n.y = height + 40;
+        if (n.y > height + 40) n.y = -40;
+
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, n.r * 4.5, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(128, 232, 255, ${n.a * 0.10})`;
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(128, 232, 255, ${n.a})`;
+        ctx.fill();
+
+        for (let j = i + 1; j < ambientNodes.length; j++) {
+          const q = ambientNodes[j];
+          const dx = n.x - q.x;
+          const dy = n.y - q.y;
+          const d = Math.sqrt(dx * dx + dy * dy);
+
+          if (d < 165) {
+            ctx.beginPath();
+            ctx.moveTo(n.x, n.y);
+            ctx.lineTo(q.x, q.y);
+            ctx.strokeStyle = `rgba(255, 255, 255, ${(1 - d / 165) * 0.052})`;
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
+        }
+      });
+    }
+
+    function drawHorizontalFunnel(g) {
+      ctx.save();
+
+      const fillGrad = ctx.createLinearGradient(g.leftX, 0, g.rightX, 0);
+      fillGrad.addColorStop(0, "rgba(255,255,255,0.014)");
+      fillGrad.addColorStop(0.5, "rgba(128,232,255,0.020)");
+      fillGrad.addColorStop(1, "rgba(242,198,109,0.016)");
+
+      const strokeGrad = ctx.createLinearGradient(g.leftX, 0, g.rightX, 0);
+      strokeGrad.addColorStop(0, "rgba(128,232,255,0.17)");
+      strokeGrad.addColorStop(0.52, "rgba(255,255,255,0.14)");
+      strokeGrad.addColorStop(1, "rgba(242,198,109,0.17)");
+
+      ctx.beginPath();
+      ctx.moveTo(g.leftX, g.topAt(g.leftX));
+
+      for (let x = g.leftX; x <= g.rightX; x += 18) {
+        ctx.lineTo(x, g.topAt(x));
+      }
+
+      for (let x = g.rightX; x >= g.leftX; x -= 18) {
+        ctx.lineTo(x, g.bottomAt(x));
+      }
+
+      ctx.closePath();
+      ctx.fillStyle = fillGrad;
+      ctx.fill();
+      ctx.strokeStyle = strokeGrad;
+      ctx.lineWidth = 1.6;
+      ctx.stroke();
+
+      ctx.beginPath();
+      for (let x = g.leftX; x <= g.rightX; x += 12) {
+        const y = lerp(g.topAt(x), g.bottomAt(x), 0.32) + Math.sin(x * 0.012) * 4;
+        if (x === g.leftX) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.strokeStyle = "rgba(128,232,255,0.065)";
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      ctx.beginPath();
+      for (let x = g.leftX; x <= g.rightX; x += 12) {
+        const y = lerp(g.topAt(x), g.bottomAt(x), 0.68) - Math.cos(x * 0.013) * 4;
+        if (x === g.leftX) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.strokeStyle = "rgba(255,255,255,0.052)";
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      g.nodes.forEach((node, i) => {
+        const pulse = 0.84 + Math.sin(Date.now() * 0.0032 + i) * 0.16;
+        const glow = 15 + pulse * 8;
+        const core = 3.2 + pulse * 0.8;
+
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, glow, 0, Math.PI * 2);
+        ctx.fillStyle = colorForHue(node.hue, 0.11);
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, core * 2.2, 0, Math.PI * 2);
+        ctx.fillStyle = colorForHue(node.hue, 0.38);
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, core, 0, Math.PI * 2);
+        ctx.fillStyle = colorForHue(node.hue, 0.95);
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(node.x - 0.7, node.y - 0.7, core * 0.45, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(255,255,255,0.88)";
+        ctx.fill();
+      });
+
+      ctx.restore();
+    }
+
+    function particlePoint(p, g) {
+      const target = g.nodes[p.targetNode % g.nodes.length];
+
+      if (p.type === "through") {
+        const start = {
+          x: -100,
+          y: g.centerY + p.lane * (g.startHalf * 0.50)
+        };
+
+        const end = {
+          x: width + 120,
+          y: g.centerY + p.lane * (g.endHalf * 0.45)
+        };
 
         return cubic(
           start,
           {
-            x: start.x + Math.sin(p.phase) * 42,
+            x: width * 0.24,
+            y: g.centerY + p.lane * (g.startHalf * 0.24) + Math.sin(p.phase) * 28
+          },
+          {
+            x: width * 0.74,
+            y: g.centerY + p.lane * (g.endHalf * 0.18) - Math.cos(p.phase) * 24
+          },
+          end,
+          p.t
+        );
+      }
+
+      if (p.type === "topBorderJoin" || p.type === "bottomBorderJoin") {
+        const isTop = p.type === "topBorderJoin";
+        const split = 0.62;
+
+        const start = {
+          x: target.x + p.xOffset,
+          y: isTop ? -90 : height + 90
+        };
+
+        if (p.t <= split) {
+          const u = p.t / split;
+
+          return cubic(
+            start,
+            {
+              x: start.x + Math.sin(p.phase) * 42,
+              y: isTop ? height * 0.14 : height * 0.86
+            },
+            {
+              x: target.x - 52,
+              y: target.y + (isTop ? -28 : 28)
+            },
+            target,
+            u
+          );
+        }
+
+        const u = (p.t - split) / (1 - split);
+        const end = {
+          x: width + 120,
+          y: g.centerY + p.lane * (g.endHalf * 0.45)
+        };
+
+        return cubic(
+          target,
+          {
+            x: target.x + width * 0.10,
+            y: target.y + (isTop ? 48 : -48)
+          },
+          {
+            x: width * 0.76,
+            y: end.y + Math.sin(p.phase) * 22
+          },
+          end,
+          u
+        );
+      }
+
+      if (p.type === "topInto" || p.type === "bottomInto") {
+        const isTop = p.type === "topInto";
+        const split = 0.62;
+        const joinX = lerp(g.leftX + 120, g.rightX - 180, p.joinT);
+        const join = insidePoint(g, joinX, p.lane * 0.72);
+
+        const start = {
+          x: joinX + p.xOffset,
+          y: isTop ? -95 : height + 95
+        };
+
+        if (p.t <= split) {
+          const u = p.t / split;
+
+          return cubic(
+            start,
+            {
+              x: start.x + Math.sin(p.phase) * 54,
+              y: isTop ? height * 0.16 : height * 0.84
+            },
+            {
+              x: join.x - 60,
+              y: join.y + (isTop ? -34 : 34)
+            },
+            join,
+            u
+          );
+        }
+
+        const u = (p.t - split) / (1 - split);
+        const end = {
+          x: width + 120,
+          y: g.centerY + p.lane * (g.endHalf * 0.46)
+        };
+
+        return cubic(
+          join,
+          {
+            x: join.x + width * 0.10,
+            y: join.y + Math.sin(p.phase) * 18
+          },
+          {
+            x: width * 0.76,
+            y: end.y - Math.cos(p.phase) * 22
+          },
+          end,
+          u
+        );
+      }
+
+      if (p.type === "insideOutTop" || p.type === "insideOutBottom") {
+        const isTop = p.type === "insideOutTop";
+        const split = 0.42;
+
+        const start = insidePoint(g, p.startX, p.lane * 0.60);
+        const exit = target;
+        const end = {
+          x: exit.x + p.xOffset * 0.36,
+          y: isTop ? -110 : height + 110
+        };
+
+        if (p.t <= split) {
+          const u = p.t / split;
+
+          return cubic(
+            start,
+            {
+              x: lerp(start.x, exit.x, 0.32),
+              y: start.y + Math.sin(p.phase) * 20
+            },
+            {
+              x: exit.x - 58,
+              y: exit.y + (isTop ? 34 : -34)
+            },
+            exit,
+            u
+          );
+        }
+
+        const u = (p.t - split) / (1 - split);
+
+        return cubic(
+          exit,
+          {
+            x: exit.x + 36,
+            y: exit.y + (isTop ? -42 : 42)
+          },
+          {
+            x: end.x + Math.sin(p.phase) * 48,
+            y: isTop ? height * 0.16 : height * 0.84
+          },
+          end,
+          u
+        );
+      }
+
+      if (p.type === "topTerminate" || p.type === "bottomTerminate") {
+        const isTop = p.type === "topTerminate";
+        const start = {
+          x: target.x + p.xOffset,
+          y: isTop ? -90 : height + 90
+        };
+
+        return cubic(
+          start,
+          {
+            x: start.x + Math.sin(p.phase) * 44,
             y: isTop ? height * 0.14 : height * 0.86
           },
           {
-            x: target.x - 52,
-            y: target.y + (isTop ? -28 : 28)
+            x: target.x - 50,
+            y: target.y + (isTop ? -26 : 26)
           },
           target,
-          u
+          p.t
         );
       }
 
-      const u = (p.t - split) / (1 - split);
-      const end = {
-        x: width + 120,
-        y: g.centerY + p.lane * (g.endHalf * 0.45)
-      };
-
-      return cubic(
-        target,
-        {
-          x: target.x + width * 0.10,
-          y: target.y + (isTop ? 48 : -48)
-        },
-        {
-          x: width * 0.76,
-          y: end.y + Math.sin(p.phase) * 22
-        },
-        end,
-        u
-      );
+      return { x: -100, y: g.centerY };
     }
 
-    if (p.type === "topInto" || p.type === "bottomInto") {
-      const isTop = p.type === "topInto";
-      const split = 0.62;
-      const joinX = lerp(g.leftX + 120, g.rightX - 180, p.joinT);
-      const join = insidePoint(g, joinX, p.lane * 0.72);
+    function drawParticles(g) {
+      const positions = [];
 
-      const start = {
-        x: joinX + p.xOffset,
-        y: isTop ? -95 : height + 95
-      };
+      particles.forEach(p => {
+        if (!reduceMotion) {
+          p.t += p.speed;
+        }
 
-      if (p.t <= split) {
-        const u = p.t / split;
+        if (p.t > 1) {
+          Object.assign(p, createParticle());
+          p.t = 0;
+        }
 
-        return cubic(
-          start,
-          {
-            x: start.x + Math.sin(p.phase) * 54,
-            y: isTop ? height * 0.16 : height * 0.84
-          },
-          {
-            x: join.x - 60,
-            y: join.y + (isTop ? -34 : 34)
-          },
-          join,
-          u
-        );
-      }
+        const pos = particlePoint(p, g);
 
-      const u = (p.t - split) / (1 - split);
-      const end = {
-        x: width + 120,
-        y: g.centerY + p.lane * (g.endHalf * 0.46)
-      };
+        let alpha = p.alpha;
 
-      return cubic(
-        join,
-        {
-          x: join.x + width * 0.10,
-          y: join.y + Math.sin(p.phase) * 18
-        },
-        {
-          x: width * 0.76,
-          y: end.y - Math.cos(p.phase) * 22
-        },
-        end,
-        u
-      );
-    }
+        if ((p.type === "topTerminate" || p.type === "bottomTerminate") && p.t > 0.74) {
+          alpha *= 1 - ((p.t - 0.74) / 0.26) * 0.60;
+        }
 
-    if (p.type === "insideOutTop" || p.type === "insideOutBottom") {
-      const isTop = p.type === "insideOutTop";
-      const split = 0.42;
+        positions.push({ x: pos.x, y: pos.y, p, alpha });
 
-      const start = insidePoint(g, p.startX, p.lane * 0.60);
-      const exit = target;
-      const end = {
-        x: exit.x + p.xOffset * 0.36,
-        y: isTop ? -110 : height + 110
-      };
+        ctx.beginPath();
+        ctx.arc(pos.x, pos.y, p.size * 7.5, 0, Math.PI * 2);
+        ctx.fillStyle = colorForHue(p.hue, alpha * 0.08);
+        ctx.fill();
 
-      if (p.t <= split) {
-        const u = p.t / split;
+        ctx.beginPath();
+        ctx.arc(pos.x, pos.y, p.size * 2.5, 0, Math.PI * 2);
+        ctx.fillStyle = colorForHue(p.hue, alpha * 0.34);
+        ctx.fill();
 
-        return cubic(
-          start,
-          {
-            x: lerp(start.x, exit.x, 0.32),
-            y: start.y + Math.sin(p.phase) * 20
-          },
-          {
-            x: exit.x - 58,
-            y: exit.y + (isTop ? 34 : -34)
-          },
-          exit,
-          u
-        );
-      }
+        ctx.beginPath();
+        ctx.arc(pos.x, pos.y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = colorForHue(p.hue, alpha);
+        ctx.fill();
 
-      const u = (p.t - split) / (1 - split);
+        ctx.beginPath();
+        ctx.arc(pos.x - p.size * 0.24, pos.y - p.size * 0.24, p.size * 0.34, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(255, 255, 255, 0.88)";
+        ctx.fill();
+      });
 
-      return cubic(
-        exit,
-        {
-          x: exit.x + 36,
-          y: exit.y + (isTop ? -42 : 42)
-        },
-        {
-          x: end.x + Math.sin(p.phase) * 48,
-          y: isTop ? height * 0.16 : height * 0.84
-        },
-        end,
-        u
-      );
-    }
+      for (let i = 0; i < positions.length; i++) {
+        for (let j = i + 1; j < positions.length; j++) {
+          const a = positions[i];
+          const b = positions[j];
+          const dx = a.x - b.x;
+          const dy = a.y - b.y;
+          const d = Math.sqrt(dx * dx + dy * dy);
 
-    if (p.type === "topTerminate" || p.type === "bottomTerminate") {
-      const isTop = p.type === "topTerminate";
-      const start = {
-        x: target.x + p.xOffset,
-        y: isTop ? -90 : height + 90
-      };
-
-      return cubic(
-        start,
-        {
-          x: start.x + Math.sin(p.phase) * 44,
-          y: isTop ? height * 0.14 : height * 0.86
-        },
-        {
-          x: target.x - 50,
-          y: target.y + (isTop ? -26 : 26)
-        },
-        target,
-        p.t
-      );
-    }
-
-    return { x: -100, y: g.centerY };
-  }
-
-  function drawParticles(g) {
-    const positions = [];
-
-    particles.forEach(p => {
-      if (!reduceMotion) {
-        p.t += p.speed;
-      }
-
-      if (p.t > 1) {
-        Object.assign(p, createParticle());
-        p.t = 0;
-      }
-
-      const pos = particlePoint(p, g);
-
-      let alpha = p.alpha;
-
-      if ((p.type === "topTerminate" || p.type === "bottomTerminate") && p.t > 0.74) {
-        alpha *= 1 - ((p.t - 0.74) / 0.26) * 0.60;
-      }
-
-      positions.push({ x: pos.x, y: pos.y, p, alpha });
-
-      ctx.beginPath();
-      ctx.arc(pos.x, pos.y, p.size * 7.5, 0, Math.PI * 2);
-      ctx.fillStyle = colorForHue(p.hue, alpha * 0.08);
-      ctx.fill();
-
-      ctx.beginPath();
-      ctx.arc(pos.x, pos.y, p.size * 2.5, 0, Math.PI * 2);
-      ctx.fillStyle = colorForHue(p.hue, alpha * 0.34);
-      ctx.fill();
-
-      ctx.beginPath();
-      ctx.arc(pos.x, pos.y, p.size, 0, Math.PI * 2);
-      ctx.fillStyle = colorForHue(p.hue, alpha);
-      ctx.fill();
-
-      ctx.beginPath();
-      ctx.arc(pos.x - p.size * 0.24, pos.y - p.size * 0.24, p.size * 0.34, 0, Math.PI * 2);
-      ctx.fillStyle = "rgba(255, 255, 255, 0.88)";
-      ctx.fill();
-    });
-
-    for (let i = 0; i < positions.length; i++) {
-      for (let j = i + 1; j < positions.length; j++) {
-        const a = positions[i];
-        const b = positions[j];
-        const dx = a.x - b.x;
-        const dy = a.y - b.y;
-        const d = Math.sqrt(dx * dx + dy * dy);
-
-        if (d < 90) {
-          ctx.beginPath();
-          ctx.moveTo(a.x, a.y);
-          ctx.lineTo(b.x, b.y);
-          ctx.strokeStyle = `rgba(128, 232, 255, ${(1 - d / 90) * 0.10})`;
-          ctx.lineWidth = 1;
-          ctx.stroke();
+          if (d < 90) {
+            ctx.beginPath();
+            ctx.moveTo(a.x, a.y);
+            ctx.lineTo(b.x, b.y);
+            ctx.strokeStyle = `rgba(128, 232, 255, ${(1 - d / 90) * 0.10})`;
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
         }
       }
     }
-  }
 
-  function animateBackground() {
-    ctx.clearRect(0, 0, width, height);
+    function animateBackground() {
+      ctx.clearRect(0, 0, width, height);
 
-    currentGeometry = horizontalFunnelGeometry();
+      currentGeometry = horizontalFunnelGeometry();
 
-    drawAmbientNodes();
-    drawHorizontalFunnel(currentGeometry);
-    drawParticles(currentGeometry);
+      drawAmbientNodes();
+      drawHorizontalFunnel(currentGeometry);
+      drawParticles(currentGeometry);
 
-    requestAnimationFrame(animateBackground);
-  }
+      requestAnimationFrame(animateBackground);
+    }
 
-  window.addEventListener("resize", resizeCanvas);
-  resizeCanvas();
-  animateBackground();
-</script>
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+    animateBackground();
   </script>
 </body>
 </html>
