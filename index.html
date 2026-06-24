@@ -6,37 +6,34 @@
 
   <title>My OI Bucket List | AOM 2026 Open Innovation PDW</title>
 
-  <!-- Export libraries. No integrity attribute, to avoid GitHub Pages/CDN hash blocking issues. -->
   <script defer src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 
   <style>
     :root {
-      --ink: #111827;
-      --ink-soft: #334155;
-      --muted: #667085;
+      --bg-0: #06101d;
+      --bg-1: #0b1e34;
+      --bg-2: #102f4b;
+      --bg-3: #163e5f;
 
+      --ink: #142136;
+      --ink-2: #2b3b52;
+      --muted: #66758b;
+
+      --paper: #fbfdff;
+      --paper-warm: #fffaf3;
       --white: #ffffff;
-      --paper: #fffaf6;
-      --paper-2: #f8fbff;
 
-      --deep: #120024;
-      --violet: #4b148c;
-      --plum: #7c1fa6;
-      --magenta: #dd167d;
-      --coral: #ff5d5d;
-      --amber: #ffbd50;
-      --cyan: #66e7ff;
-      --blue: #1c78ff;
+      --teal: #55d9cb;
+      --cyan: #80e8ff;
+      --blue: #4d92ff;
+      --indigo: #6674e8;
+      --gold: #f2c66d;
 
-      --line: rgba(255, 255, 255, 0.18);
-      --dark-line: rgba(17, 24, 39, 0.12);
-
-      --shadow-soft: 0 22px 70px rgba(8, 6, 28, 0.26);
-      --shadow-card: 0 20px 54px rgba(29, 13, 61, 0.16);
-      --radius-lg: 34px;
-      --radius-md: 24px;
-      --focus: 0 0 0 4px rgba(102, 231, 255, 0.35);
+      --shadow: 0 28px 90px rgba(0, 8, 24, 0.28);
+      --soft-shadow: 0 18px 48px rgba(13, 26, 46, 0.16);
+      --radius-xl: 36px;
+      --focus: 0 0 0 4px rgba(128, 232, 255, 0.34);
     }
 
     * {
@@ -53,7 +50,7 @@
       min-height: 100vh;
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       color: var(--white);
-      background: #120024;
+      background: var(--bg-0);
       overflow-x: hidden;
     }
 
@@ -63,13 +60,12 @@
       inset: 0;
       z-index: -5;
       background:
-        radial-gradient(circle at 18% 70%, rgba(255, 93, 93, 0.78), transparent 22%),
-        radial-gradient(circle at 18% 62%, rgba(221, 22, 125, 0.82), transparent 32%),
-        radial-gradient(circle at 52% 15%, rgba(124, 31, 166, 0.76), transparent 31%),
-        radial-gradient(circle at 72% 5%, rgba(102, 231, 255, 0.22), transparent 23%),
-        radial-gradient(circle at 88% 50%, rgba(255, 189, 80, 0.17), transparent 28%),
-        linear-gradient(135deg, #140025 0%, #230042 35%, #120024 68%, #070012 100%);
-      animation: gradientDrift 18s ease-in-out infinite alternate;
+        radial-gradient(circle at 13% 17%, rgba(85, 217, 203, 0.16), transparent 26%),
+        radial-gradient(circle at 86% 12%, rgba(102, 116, 232, 0.17), transparent 28%),
+        radial-gradient(circle at 76% 77%, rgba(242, 198, 109, 0.12), transparent 25%),
+        radial-gradient(circle at 18% 84%, rgba(77, 146, 255, 0.14), transparent 29%),
+        linear-gradient(135deg, #06101d 0%, #0b1e34 42%, #102f4b 74%, #07101c 100%);
+      animation: slowGradient 24s ease-in-out infinite alternate;
     }
 
     body::after {
@@ -78,24 +74,27 @@
       inset: 0;
       z-index: -4;
       pointer-events: none;
-      opacity: 0.23;
+      opacity: 0.14;
       background-image:
-        url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.28'/%3E%3C/svg%3E");
-      mix-blend-mode: overlay;
+        linear-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+      background-size: 72px 72px;
+      mask-image: radial-gradient(circle at 50% 50%, black 0%, transparent 78%);
     }
 
-    @keyframes gradientDrift {
+    @keyframes slowGradient {
       0% {
-        filter: hue-rotate(0deg) saturate(1.05);
+        filter: saturate(1.02) hue-rotate(0deg);
         transform: scale(1);
       }
+
       100% {
-        filter: hue-rotate(12deg) saturate(1.18);
-        transform: scale(1.04);
+        filter: saturate(1.10) hue-rotate(7deg);
+        transform: scale(1.03);
       }
     }
 
-    #particleCanvas {
+    #funnelCanvas {
       position: fixed;
       inset: 0;
       z-index: -3;
@@ -104,31 +103,14 @@
       pointer-events: none;
     }
 
-    .background-mesh {
-      position: fixed;
-      inset: 0;
-      z-index: -2;
-      pointer-events: none;
-      opacity: 0.26;
-      background-image:
-        linear-gradient(rgba(255, 255, 255, 0.12) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.12) 1px, transparent 1px);
-      background-size: 74px 74px;
-      mask-image: radial-gradient(circle at 50% 50%, black 0%, transparent 76%);
-    }
-
-    a {
-      color: inherit;
-    }
-
     .page {
       width: min(1180px, calc(100% - 36px));
       margin: 0 auto;
-      padding: 44px 0 36px;
+      padding: 42px 0 36px;
     }
 
     .hero {
-      margin-bottom: 30px;
+      margin-bottom: 34px;
     }
 
     .topline {
@@ -136,90 +118,63 @@
       flex-wrap: wrap;
       gap: 10px;
       align-items: center;
-      margin-bottom: 22px;
+      margin-bottom: 24px;
     }
 
-    .top-pill {
+    .pill {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 9px 13px;
-      border: 1px solid rgba(255, 255, 255, 0.18);
+      min-height: 34px;
+      padding: 8px 14px;
       border-radius: 999px;
+      color: rgba(255, 255, 255, 0.91);
       background: rgba(255, 255, 255, 0.10);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
       backdrop-filter: blur(18px);
-      color: #f8fbff;
-      font-size: 0.78rem;
-      font-weight: 800;
-      letter-spacing: 0.08em;
+      font-size: 0.76rem;
+      font-weight: 850;
+      letter-spacing: 0.075em;
       text-transform: uppercase;
     }
 
-    .top-pill.primary {
-      color: #1d1026;
-      background: linear-gradient(135deg, #fff0b9, #ffbd50);
-      border-color: rgba(255, 255, 255, 0.35);
+    .pill.primary {
+      color: #182538;
+      background: linear-gradient(135deg, #fff4cc, #f2c66d);
+      border-color: rgba(255, 255, 255, 0.34);
     }
 
-    .dot {
+    .pill-dot {
       width: 7px;
       height: 7px;
-      border-radius: 99px;
+      border-radius: 999px;
       background: var(--cyan);
-      box-shadow: 0 0 24px rgba(102, 231, 255, 0.9);
+      box-shadow: 0 0 22px rgba(128, 232, 255, 0.95);
     }
 
-    .hero-grid {
-      display: grid;
-      grid-template-columns: 1.05fr 0.95fr;
-      gap: 36px;
-      align-items: end;
-    }
-
-    h1 {
+    .hero h1 {
       margin: 0;
-      max-width: 760px;
-      font-size: clamp(3rem, 8vw, 6.8rem);
-      line-height: 0.88;
-      letter-spacing: -0.075em;
-      font-weight: 930;
+      max-width: 860px;
+      font-size: clamp(3.2rem, 8.8vw, 7.4rem);
+      line-height: 0.86;
+      letter-spacing: -0.082em;
+      font-weight: 950;
     }
 
-    h1 .accent {
-      display: inline-block;
+    .hero h1 span {
       color: transparent;
-      background: linear-gradient(90deg, #ffffff 0%, #d8fbff 42%, #ffefb7 74%, #ff8fb9 100%);
+      background: linear-gradient(90deg, #ffffff 0%, #eafffb 40%, #fff1b9 74%, #d7eaff 100%);
       -webkit-background-clip: text;
       background-clip: text;
-      text-shadow: none;
     }
 
     .subtitle {
-      margin: 20px 0 0;
-      max-width: 690px;
-      color: rgba(255, 255, 255, 0.82);
-      font-size: clamp(1rem, 2vw, 1.25rem);
+      margin: 22px 0 0;
+      max-width: 720px;
+      color: rgba(236, 247, 255, 0.88);
+      font-size: clamp(1.04rem, 2vw, 1.28rem);
       line-height: 1.55;
-    }
-
-    .hero-visual {
-      position: relative;
-      min-height: 230px;
-      border-radius: 32px;
-      overflow: hidden;
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      background:
-        linear-gradient(145deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.05)),
-        rgba(15, 8, 38, 0.35);
-      box-shadow: 0 24px 70px rgba(7, 0, 18, 0.25);
-      backdrop-filter: blur(20px);
-    }
-
-    .hero-visual svg {
-      width: 100%;
-      height: 100%;
-      display: block;
     }
 
     .workspace {
@@ -233,15 +188,15 @@
       position: sticky;
       top: 22px;
       padding: 25px;
-      border-radius: var(--radius-lg);
+      border-radius: var(--radius-xl);
       color: var(--ink);
       background:
-        linear-gradient(145deg, rgba(255, 255, 255, 0.94), rgba(255, 248, 255, 0.86)),
-        radial-gradient(circle at 0% 0%, rgba(255, 93, 93, 0.12), transparent 30%),
-        radial-gradient(circle at 100% 0%, rgba(102, 231, 255, 0.16), transparent 33%);
-      border: 1px solid rgba(255, 255, 255, 0.75);
-      box-shadow: var(--shadow-soft);
-      backdrop-filter: blur(18px);
+        linear-gradient(145deg, rgba(255, 255, 255, 0.93), rgba(241, 249, 255, 0.85)),
+        radial-gradient(circle at 4% 0%, rgba(85, 217, 203, 0.14), transparent 30%),
+        radial-gradient(circle at 98% 0%, rgba(242, 198, 109, 0.12), transparent 32%);
+      border: 1px solid rgba(255, 255, 255, 0.78);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(20px);
     }
 
     .panel::before {
@@ -250,19 +205,20 @@
       height: 5px;
       margin: -3px -3px 20px;
       border-radius: 999px;
-      background: linear-gradient(90deg, var(--magenta), var(--coral), var(--amber), var(--cyan));
+      background: linear-gradient(90deg, var(--teal), var(--cyan), var(--blue), var(--gold));
     }
 
     .panel h2 {
       margin: 0 0 8px;
-      color: #161827;
-      font-size: 1.08rem;
-      letter-spacing: -0.02em;
+      color: #172238;
+      font-size: 1.1rem;
+      letter-spacing: -0.025em;
+      font-weight: 900;
     }
 
     .hint {
       margin: 0 0 20px;
-      color: #657184;
+      color: #617086;
       font-size: 0.94rem;
       line-height: 1.55;
     }
@@ -280,15 +236,15 @@
     }
 
     label {
-      color: #182033;
-      font-weight: 820;
+      color: #162036;
+      font-weight: 850;
       line-height: 1.28;
       letter-spacing: -0.012em;
     }
 
     .counter {
       flex: 0 0 auto;
-      color: #667085;
+      color: #66748a;
       font-size: 0.76rem;
       font-weight: 760;
       font-variant-numeric: tabular-nums;
@@ -298,32 +254,37 @@
       width: 100%;
       min-height: 76px;
       resize: vertical;
-      border: 1px solid rgba(35, 17, 73, 0.14);
+      border: 1px solid rgba(19, 32, 51, 0.14);
       border-radius: 18px;
       padding: 14px 15px;
       font: inherit;
       font-size: 0.97rem;
       line-height: 1.45;
-      color: #171827;
-      background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(250, 252, 255, 0.96));
-      box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.85),
-        0 10px 28px rgba(20, 0, 45, 0.06);
+      color: var(--ink);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.97), rgba(247, 252, 255, 0.96));
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.92), 0 10px 28px rgba(13, 26, 46, 0.07);
       outline: none;
-      transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+      transition: border-color 160ms ease, box-shadow 160ms ease;
     }
 
     textarea:focus {
-      border-color: rgba(102, 231, 255, 0.95);
-      box-shadow: var(--focus), 0 12px 30px rgba(20, 0, 45, 0.08);
+      border-color: rgba(85, 217, 203, 0.95);
+      box-shadow: var(--focus), 0 12px 30px rgba(13, 26, 46, 0.09);
     }
 
     .privacy-note {
-      margin: 10px 0 16px;
-      color: #58677d;
+      margin: 10px 0 18px;
+      color: #5f6f85;
       font-size: 0.86rem;
       line-height: 1.45;
+    }
+
+    .download-title {
+      margin: 6px 0 10px;
+      color: #172238;
+      font-size: 0.95rem;
+      font-weight: 900;
+      letter-spacing: -0.012em;
     }
 
     .actions {
@@ -362,39 +323,27 @@
     }
 
     button:disabled {
-      cursor: wait;
       opacity: 0.72;
+      cursor: wait;
       transform: none;
     }
 
     .primary-btn {
-      color: #150b21;
-      background: linear-gradient(135deg, #66e7ff 0%, #ffbd50 54%, #ff73a5 100%);
-      box-shadow: 0 18px 36px rgba(221, 22, 125, 0.22);
-    }
-
-    .secondary-btn {
-      color: #171827;
-      background: linear-gradient(180deg, #ffffff, #edfaff);
-      border: 1px solid rgba(102, 231, 255, 0.38);
-    }
-
-    .tertiary-btn {
-      color: #171827;
-      background: linear-gradient(180deg, #ffffff, #f4f1ff);
-      border: 1px solid rgba(75, 20, 140, 0.15);
+      color: #07111f;
+      background: linear-gradient(135deg, var(--cyan) 0%, var(--teal) 48%, var(--gold) 100%);
+      box-shadow: 0 18px 36px rgba(85, 217, 203, 0.18);
     }
 
     .clear-btn {
-      color: #7a1b44;
-      background: #fff4f8;
-      border: 1px solid rgba(221, 22, 125, 0.18);
+      color: #6a3b00;
+      background: linear-gradient(180deg, #fffaf0, #fff2d4);
+      border: 1px solid rgba(242, 198, 109, 0.42);
     }
 
     .status {
       min-height: 20px;
       margin: 12px 0 0;
-      color: #525f73;
+      color: #58677e;
       font-size: 0.83rem;
       line-height: 1.4;
     }
@@ -407,15 +356,20 @@
 
     .artifact {
       position: relative;
-      width: min(100%, 780px);
+      display: flex;
+      flex-direction: column;
+      width: min(100%, 790px);
       aspect-ratio: 210 / 297;
       overflow: hidden;
-      border-radius: 36px;
+      border-radius: 38px;
       color: var(--ink);
       background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 249, 253, 0.98) 52%, rgba(248, 253, 255, 0.98) 100%);
-      border: 1px solid rgba(255, 255, 255, 0.84);
-      box-shadow: var(--shadow-soft);
+        radial-gradient(circle at 12% 20%, rgba(85, 217, 203, 0.12), transparent 28%),
+        radial-gradient(circle at 88% 12%, rgba(102, 116, 232, 0.12), transparent 27%),
+        radial-gradient(circle at 80% 90%, rgba(242, 198, 109, 0.14), transparent 28%),
+        linear-gradient(180deg, #fcfeff 0%, #f7fbff 56%, #fffaf1 100%);
+      border: 1px solid rgba(255, 255, 255, 0.88);
+      box-shadow: var(--shadow);
       isolation: isolate;
     }
 
@@ -424,33 +378,22 @@
       position: absolute;
       inset: 0;
       z-index: -3;
-      background:
-        radial-gradient(circle at 12% 24%, rgba(255, 93, 93, 0.13), transparent 26%),
-        radial-gradient(circle at 82% 18%, rgba(102, 231, 255, 0.14), transparent 26%),
-        radial-gradient(circle at 78% 86%, rgba(255, 189, 80, 0.17), transparent 24%);
+      opacity: 0.45;
+      background-image:
+        linear-gradient(rgba(19, 32, 51, 0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(19, 32, 51, 0.045) 1px, transparent 1px);
+      background-size: 36px 36px;
+      mask-image: linear-gradient(180deg, transparent 0%, black 16%, black 82%, transparent 100%);
     }
 
-    .artifact::after {
-      content: "";
+    .artifact-bg {
       position: absolute;
       inset: 0;
       z-index: -2;
-      opacity: 0.30;
-      background-image:
-        linear-gradient(rgba(18, 0, 36, 0.045) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(18, 0, 36, 0.045) 1px, transparent 1px);
-      background-size: 34px 34px;
-      mask-image: linear-gradient(180deg, transparent 0%, black 18%, black 82%, transparent 100%);
-    }
-
-    .artifact-graphic {
-      position: absolute;
-      inset: 0;
-      z-index: -1;
       pointer-events: none;
     }
 
-    .artifact-graphic svg {
+    .artifact-bg svg {
       width: 100%;
       height: 100%;
       display: block;
@@ -461,21 +404,11 @@
       padding: 38px 42px 34px;
       color: #ffffff;
       background:
-        radial-gradient(circle at 18% 30%, rgba(255, 93, 93, 0.52), transparent 26%),
-        radial-gradient(circle at 60% 2%, rgba(124, 31, 166, 0.72), transparent 36%),
-        radial-gradient(circle at 90% 38%, rgba(102, 231, 255, 0.24), transparent 30%),
-        linear-gradient(135deg, #150026 0%, #31105f 48%, #100022 100%);
+        radial-gradient(circle at 22% 22%, rgba(85, 217, 203, 0.23), transparent 30%),
+        radial-gradient(circle at 86% 18%, rgba(102, 116, 232, 0.22), transparent 32%),
+        radial-gradient(circle at 74% 72%, rgba(242, 198, 109, 0.13), transparent 28%),
+        linear-gradient(135deg, #07111f 0%, #12314f 52%, #0c2038 100%);
       overflow: hidden;
-    }
-
-    .artifact-header::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      opacity: 0.24;
-      background-image:
-        url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.95' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.34'/%3E%3C/svg%3E");
-      mix-blend-mode: overlay;
     }
 
     .artifact-header::after {
@@ -484,9 +417,23 @@
       left: 0;
       right: 0;
       bottom: -1px;
-      height: 72px;
-      background: linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.12));
+      height: 74px;
+      background: linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.10));
       pointer-events: none;
+    }
+
+    .header-art {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.72;
+    }
+
+    .header-art svg {
+      width: 100%;
+      height: 100%;
+      display: block;
     }
 
     .artifact-kicker {
@@ -495,7 +442,7 @@
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin-bottom: 24px;
+      margin-bottom: 23px;
     }
 
     .artifact-kicker span {
@@ -504,18 +451,18 @@
       min-height: 28px;
       padding: 7px 10px;
       border-radius: 999px;
-      color: rgba(255, 255, 255, 0.90);
-      background: rgba(255, 255, 255, 0.12);
+      color: rgba(255, 255, 255, 0.88);
+      background: rgba(255, 255, 255, 0.11);
       border: 1px solid rgba(255, 255, 255, 0.16);
-      font-size: 0.68rem;
+      font-size: 0.66rem;
       font-weight: 900;
       letter-spacing: 0.075em;
       text-transform: uppercase;
     }
 
     .artifact-kicker span:first-child {
-      color: #211024;
-      background: linear-gradient(135deg, #fff2bd, #ffbd50);
+      color: #182033;
+      background: linear-gradient(135deg, #fff3c8, #f2c66d);
       border-color: rgba(255, 255, 255, 0.42);
     }
 
@@ -523,17 +470,17 @@
       position: relative;
       z-index: 2;
       margin: 0;
-      max-width: 660px;
+      max-width: 680px;
       color: #ffffff;
-      font-size: clamp(2.05rem, 5vw, 4.08rem);
-      line-height: 0.95;
+      font-size: clamp(2.25rem, 5.15vw, 4.05rem);
+      line-height: 0.96;
       letter-spacing: -0.065em;
-      font-weight: 930;
+      font-weight: 950;
       text-wrap: balance;
     }
 
     .artifact-title span {
-      color: #eafcff;
+      color: #eafffb;
     }
 
     .artifact-subtitle {
@@ -541,14 +488,15 @@
       z-index: 2;
       margin: 18px 0 0;
       max-width: 560px;
-      color: rgba(255, 255, 255, 0.82);
-      font-size: 1rem;
+      color: rgba(239, 249, 255, 0.84);
+      font-size: 0.99rem;
       line-height: 1.5;
     }
 
-    .card-body {
+    .artifact-body {
       position: relative;
-      padding: 31px 42px 0;
+      flex: 1;
+      padding: 30px 42px 20px;
     }
 
     .instruction {
@@ -556,13 +504,12 @@
       margin: 0 0 22px;
       padding: 20px 23px 20px 25px;
       border-radius: 23px;
-      color: #29364a;
-      background:
-        linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(255, 251, 255, 0.88));
-      border: 1px solid rgba(49, 16, 95, 0.10);
-      box-shadow: 0 16px 42px rgba(20, 0, 45, 0.08);
+      color: #26354c;
+      background: rgba(255, 255, 255, 0.88);
+      border: 1px solid rgba(19, 32, 51, 0.10);
+      box-shadow: 0 16px 42px rgba(13, 26, 46, 0.08);
       line-height: 1.58;
-      font-size: 1.01rem;
+      font-size: 1rem;
     }
 
     .instruction::before {
@@ -573,7 +520,7 @@
       bottom: 19px;
       width: 5px;
       border-radius: 999px;
-      background: linear-gradient(180deg, var(--cyan), var(--amber), var(--magenta));
+      background: linear-gradient(180deg, var(--teal), var(--cyan), var(--gold));
     }
 
     .items {
@@ -584,58 +531,59 @@
     .item {
       position: relative;
       display: grid;
-      grid-template-columns: 48px 1fr;
+      grid-template-columns: 50px 1fr;
       gap: 17px;
-      padding: 21px 22px;
-      min-height: 119px;
+      min-height: 118px;
+      padding: 20px 22px;
       border-radius: 25px;
       overflow: hidden;
       background:
-        linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(255, 250, 255, 0.84));
-      border: 1px solid rgba(49, 16, 95, 0.10);
-      box-shadow: 0 16px 40px rgba(20, 0, 45, 0.08);
+        linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(248, 253, 255, 0.86));
+      border: 1px solid rgba(19, 32, 51, 0.10);
+      box-shadow: 0 16px 40px rgba(13, 26, 46, 0.075);
     }
 
     .item::before {
       content: "";
       position: absolute;
-      right: -40px;
-      top: -54px;
-      width: 150px;
-      height: 150px;
+      right: -48px;
+      top: -60px;
+      width: 165px;
+      height: 165px;
       border-radius: 999px;
-      background: radial-gradient(circle, rgba(102, 231, 255, 0.20), transparent 66%);
+      background: radial-gradient(circle, rgba(128, 232, 255, 0.18), transparent 66%);
     }
 
     .item::after {
       content: "";
       position: absolute;
-      left: 20px;
-      right: 20px;
+      left: 22px;
+      right: 22px;
       bottom: 0;
       height: 2px;
-      background: linear-gradient(90deg, transparent, rgba(255, 93, 93, 0.22), rgba(102, 231, 255, 0.22), transparent);
+      background: linear-gradient(90deg, transparent, rgba(85, 217, 203, 0.18), rgba(242, 198, 109, 0.18), transparent);
     }
 
     .number {
-      width: 48px;
-      height: 48px;
+      width: 50px;
+      height: 50px;
       display: grid;
       place-items: center;
       border-radius: 17px;
-      color: #1d1026;
-      font-weight: 930;
-      background:
-        radial-gradient(circle at 28% 22%, #ffffff, transparent 34%),
-        linear-gradient(135deg, #eaffff 0%, #ffefb7 58%, #ffd1e2 100%);
-      box-shadow: 0 12px 26px rgba(102, 231, 255, 0.22);
+      color: #102033;
+      font-weight: 950;
+      background: #fff0bd;
+      border: 1px solid rgba(218, 171, 72, 0.48);
+      box-shadow:
+        0 0 0 8px rgba(128, 232, 255, 0.08),
+        0 12px 24px rgba(13, 26, 46, 0.08);
     }
 
     .item-title {
       position: relative;
       z-index: 2;
       margin: 0 0 12px;
-      color: #152033;
+      color: #142038;
       font-weight: 900;
       letter-spacing: -0.018em;
       line-height: 1.25;
@@ -647,8 +595,8 @@
       min-height: 45px;
       display: flex;
       align-items: center;
-      color: #334155;
-      font-size: 1.01rem;
+      color: #344258;
+      font-size: 1rem;
       line-height: 1.52;
       white-space: pre-wrap;
       overflow-wrap: anywhere;
@@ -664,25 +612,22 @@
     .placeholder-lines span {
       display: block;
       height: 1px;
-      background: linear-gradient(90deg, rgba(49, 16, 95, 0.18), rgba(221, 22, 125, 0.12), transparent);
+      background: linear-gradient(90deg, rgba(19, 32, 51, 0.20), rgba(85, 217, 203, 0.14), transparent);
     }
 
     .artifact-footer {
-      position: absolute;
-      left: 42px;
-      right: 42px;
-      bottom: 33px;
       display: flex;
       justify-content: space-between;
       gap: 18px;
       align-items: flex-end;
-      color: #5e6b7c;
-      font-size: 0.83rem;
+      padding: 0 42px 34px;
+      color: #5e6d83;
+      font-size: 0.82rem;
       line-height: 1.35;
     }
 
     .footer-strong {
-      color: #182033;
+      color: #142038;
       font-weight: 900;
     }
 
@@ -690,25 +635,13 @@
       margin-top: 30px;
       padding-bottom: 10px;
       text-align: center;
-      color: rgba(255, 255, 255, 0.76);
+      color: rgba(235, 247, 255, 0.76);
       font-size: 0.92rem;
       line-height: 1.55;
     }
 
     .site-footer strong {
-      color: rgba(255, 255, 255, 0.96);
-    }
-
-    .sr-only {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      white-space: nowrap;
-      border: 0;
+      color: rgba(255, 255, 255, 0.95);
     }
 
     .export-clone-wrap {
@@ -720,7 +653,7 @@
       opacity: 1;
       pointer-events: none;
       overflow: hidden;
-      background: #fffaf6;
+      background: #ffffff;
       z-index: -1;
     }
 
@@ -735,6 +668,24 @@
       transform: none !important;
     }
 
+    .export-clone-wrap .artifact-title {
+      font-size: 56px !important;
+    }
+
+    .export-clone-wrap .artifact-header {
+      padding-top: 38px !important;
+      padding-bottom: 34px !important;
+    }
+
+    .export-clone-wrap .artifact-body {
+      padding-top: 30px !important;
+      padding-bottom: 20px !important;
+    }
+
+    .export-clone-wrap .artifact-footer {
+      padding-bottom: 34px !important;
+    }
+
     .export-clone-wrap * {
       animation: none !important;
       transition: none !important;
@@ -742,18 +693,17 @@
     }
 
     @media (max-width: 980px) {
-      .hero-grid,
       .workspace {
         grid-template-columns: 1fr;
-      }
-
-      .hero-visual {
-        min-height: 190px;
       }
 
       .panel {
         position: relative;
         top: auto;
+      }
+
+      .hero h1 {
+        max-width: 100%;
       }
     }
 
@@ -763,40 +713,35 @@
         padding-top: 24px;
       }
 
-      h1 {
-        letter-spacing: -0.055em;
+      .pill {
+        min-height: 30px;
+        padding: 7px 10px;
+        font-size: 0.66rem;
       }
 
-      .topline {
-        gap: 8px;
-      }
-
-      .top-pill {
-        font-size: 0.68rem;
-      }
-
-      .hero-visual {
-        display: none;
+      .hero h1 {
+        letter-spacing: -0.058em;
       }
 
       .panel,
       .artifact {
-        border-radius: 25px;
+        border-radius: 26px;
       }
 
       .artifact-header,
-      .card-body {
+      .artifact-body,
+      .artifact-footer {
         padding-left: 23px;
         padding-right: 23px;
       }
 
-      .artifact-kicker span {
-        font-size: 0.56rem;
-        min-height: 24px;
+      .artifact-title {
+        font-size: clamp(2.1rem, 9vw, 3.2rem);
       }
 
-      .artifact-title {
-        font-size: clamp(2rem, 9vw, 3.1rem);
+      .artifact-kicker span {
+        min-height: 24px;
+        font-size: 0.55rem;
       }
 
       .item {
@@ -805,136 +750,36 @@
         padding: 19px;
       }
 
-      .artifact-footer {
-        left: 23px;
-        right: 23px;
-        bottom: 24px;
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
       .button-row {
         grid-template-columns: 1fr;
       }
-    }
 
-    @media print {
-      body {
-        background: #ffffff !important;
-      }
-
-      body::before,
-      body::after,
-      #particleCanvas,
-      .background-mesh,
-      .hero,
-      .panel,
-      .site-footer {
-        display: none !important;
-      }
-
-      .page {
-        width: 100%;
-        padding: 0;
-      }
-
-      .workspace {
-        display: block;
-      }
-
-      .stage {
-        display: block;
-      }
-
-      .artifact {
-        width: 210mm;
-        height: 297mm;
-        aspect-ratio: auto;
-        border: 0;
-        border-radius: 0;
-        box-shadow: none;
-      }
-
-      @page {
-        size: A4;
-        margin: 0;
+      .artifact-footer {
+        flex-direction: column;
+        align-items: flex-start;
+        padding-bottom: 25px;
       }
     }
   </style>
 </head>
 
 <body>
-  <canvas id="particleCanvas" aria-hidden="true"></canvas>
-  <div class="background-mesh" aria-hidden="true"></div>
+  <canvas id="funnelCanvas" aria-hidden="true"></canvas>
 
   <main class="page">
     <section class="hero" aria-labelledby="main-title">
       <div class="topline" aria-label="Workshop details">
-        <span class="top-pill primary">AOM 2026 | Philadelphia</span>
-        <span class="top-pill"><span class="dot"></span>Open Innovation PDW</span>
-        <span class="top-pill">Transcending our boundaries</span>
+        <span class="pill primary">AOM 2026 | Philadelphia</span>
+        <span class="pill"><span class="pill-dot"></span>Open Innovation PDW</span>
+        <span class="pill">Transcending our boundaries</span>
       </div>
 
-      <div class="hero-grid">
-        <div>
-          <h1 id="main-title">
-            <span class="accent">My OI</span><br />
-            <span class="accent">Bucket List</span>
-          </h1>
-          <p class="subtitle">A personal research agenda for transcending boundaries.</p>
-        </div>
+      <h1 id="main-title">
+        <span>My OI</span><br />
+        <span>Bucket List</span>
+      </h1>
 
-        <div class="hero-visual" aria-hidden="true">
-          <svg viewBox="0 0 560 260" preserveAspectRatio="none">
-            <defs>
-              <linearGradient id="heroLine" x1="0" x2="1">
-                <stop offset="0%" stop-color="#66e7ff" stop-opacity="0.15" />
-                <stop offset="45%" stop-color="#ffffff" stop-opacity="0.55" />
-                <stop offset="100%" stop-color="#ffbd50" stop-opacity="0.42" />
-              </linearGradient>
-              <radialGradient id="nodeGlow">
-                <stop offset="0%" stop-color="#ffffff" />
-                <stop offset="42%" stop-color="#66e7ff" />
-                <stop offset="100%" stop-color="#66e7ff" stop-opacity="0" />
-              </radialGradient>
-            </defs>
-
-            <rect x="0" y="0" width="560" height="260" fill="rgba(255,255,255,0.03)" />
-
-            <g stroke="rgba(255,255,255,0.12)" stroke-width="1">
-              <path d="M42 38H520M42 84H520M42 130H520M42 176H520M42 222H520" />
-              <path d="M70 22V238M142 22V238M214 22V238M286 22V238M358 22V238M430 22V238M502 22V238" />
-            </g>
-
-            <path d="M40 190 C112 55, 178 154, 242 112 S350 29, 422 92 S494 166, 526 80" fill="none" stroke="url(#heroLine)" stroke-width="3.2" />
-            <path d="M55 216 C118 139, 196 212, 270 162 S404 105, 514 178" fill="none" stroke="url(#heroLine)" stroke-width="1.8" opacity="0.78" />
-
-            <g opacity="0.86">
-              <circle cx="40" cy="190" r="15" fill="url(#nodeGlow)" />
-              <circle cx="242" cy="112" r="15" fill="url(#nodeGlow)" />
-              <circle cx="422" cy="92" r="15" fill="url(#nodeGlow)" />
-              <circle cx="526" cy="80" r="15" fill="url(#nodeGlow)" />
-              <circle cx="270" cy="162" r="12" fill="url(#nodeGlow)" />
-            </g>
-
-            <g fill="none" stroke="rgba(255,189,80,0.35)" stroke-width="2">
-              <path d="M390 44 L512 44 L467 94 L467 140 L435 160 L435 94 Z" />
-            </g>
-
-            <g fill="rgba(255,255,255,0.08)">
-              <rect x="0" y="217" width="560" height="43" />
-              <rect x="36" y="188" width="22" height="72" />
-              <rect x="70" y="176" width="45" height="84" />
-              <rect x="134" y="158" width="26" height="102" />
-              <path d="M178 260 V184 L203 158 L228 184 V260 Z" />
-              <rect x="250" y="172" width="54" height="88" />
-              <rect x="326" y="149" width="36" height="111" />
-              <rect x="388" y="180" width="58" height="80" />
-              <path d="M476 260 V198 C476 176 489 162 508 162 C527 162 540 176 540 198 V260 Z" />
-            </g>
-          </svg>
-        </div>
-      </div>
+      <p class="subtitle">A personal research agenda for transcending boundaries.</p>
     </section>
 
     <section class="workspace" aria-label="OI bucket list builder">
@@ -968,11 +813,12 @@
 
         <p class="privacy-note">Your responses stay in your browser. Nothing is submitted or stored.</p>
 
+        <div class="download-title">Download your completed card</div>
+
         <div class="actions">
-          <button class="primary-btn" type="button" id="downloadPdf">Download my OI Bucket List</button>
           <div class="button-row">
-            <button class="secondary-btn" type="button" id="downloadPng">Download as PNG</button>
-            <button class="tertiary-btn" type="button" id="printBtn">Print</button>
+            <button class="primary-btn" type="button" id="downloadPng">Download PNG</button>
+            <button class="primary-btn" type="button" id="downloadPdf">Download PDF</button>
           </div>
           <button class="clear-btn" type="button" id="clearBtn">Clear</button>
         </div>
@@ -982,60 +828,56 @@
 
       <section class="stage" aria-label="Downloadable preview">
         <article class="artifact" id="artifact">
-          <div class="artifact-graphic" aria-hidden="true">
+          <div class="artifact-bg" aria-hidden="true">
             <svg viewBox="0 0 794 1123" preserveAspectRatio="none">
               <defs>
-                <linearGradient id="artifactFlow" x1="0" x2="1">
-                  <stop offset="0%" stop-color="#66e7ff" stop-opacity="0.05" />
-                  <stop offset="45%" stop-color="#dd167d" stop-opacity="0.16" />
-                  <stop offset="100%" stop-color="#ffbd50" stop-opacity="0.10" />
-                </linearGradient>
-                <linearGradient id="artifactFlow2" x1="0" x2="1">
-                  <stop offset="0%" stop-color="#66e7ff" stop-opacity="0.35" />
-                  <stop offset="52%" stop-color="#ffffff" stop-opacity="0.20" />
-                  <stop offset="100%" stop-color="#ffbd50" stop-opacity="0.34" />
+                <linearGradient id="flowLine" x1="0" x2="1">
+                  <stop offset="0%" stop-color="#55d9cb" stop-opacity="0.08" />
+                  <stop offset="50%" stop-color="#4d92ff" stop-opacity="0.16" />
+                  <stop offset="100%" stop-color="#f2c66d" stop-opacity="0.11" />
                 </linearGradient>
               </defs>
 
-              <path d="M42 374 C134 310, 208 414, 303 356 S466 236, 602 316 S720 374, 766 300" fill="none" stroke="url(#artifactFlow)" stroke-width="2" />
-              <path d="M58 829 C168 740, 256 886, 371 797 S552 671, 738 756" fill="none" stroke="url(#artifactFlow)" stroke-width="2" />
+              <path d="M34 356 C144 292, 218 408, 330 345 S528 242, 742 324" fill="none" stroke="url(#flowLine)" stroke-width="2" />
+              <path d="M72 850 C180 760, 292 884, 420 782 S586 690, 744 760" fill="none" stroke="url(#flowLine)" stroke-width="2" />
 
-              <g opacity="0.42">
-                <circle cx="42" cy="374" r="5" fill="#66e7ff" />
-                <circle cx="303" cy="356" r="5" fill="#dd167d" />
-                <circle cx="602" cy="316" r="5" fill="#ffbd50" />
-                <circle cx="738" cy="756" r="5" fill="#66e7ff" />
-              </g>
-
-              <g transform="translate(510 42)" opacity="0.42">
-                <path d="M18 0 H220 L142 88 V154 L92 184 V88 Z" fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.20)" />
-                <circle cx="18" cy="0" r="4" fill="#66e7ff" />
-                <circle cx="220" cy="0" r="4" fill="#ffbd50" />
-                <circle cx="92" cy="184" r="4" fill="#dd167d" />
-              </g>
-
-              <g transform="translate(0 256)" opacity="0.17">
-                <rect x="0" y="0" width="794" height="52" fill="#ffffff" />
-                <rect x="34" y="18" width="22" height="34" fill="#ffffff" />
-                <rect x="72" y="4" width="45" height="48" fill="#ffffff" />
-                <rect x="138" y="-14" width="26" height="66" fill="#ffffff" />
-                <path d="M186 52 V-3 L215 -28 L244 -3 V52 Z" fill="#ffffff" />
-                <rect x="270" y="-6" width="52" height="58" fill="#ffffff" />
-                <rect x="350" y="-30" width="34" height="82" fill="#ffffff" />
-                <rect x="418" y="4" width="60" height="48" fill="#ffffff" />
-                <path d="M522 52 V8 C522 -10 535 -22 552 -22 C569 -22 582 -10 582 8 V52 Z" fill="#ffffff" />
-                <rect x="628" y="-4" width="38" height="56" fill="#ffffff" />
-                <rect x="704" y="16" width="42" height="36" fill="#ffffff" />
-              </g>
-
-              <g transform="translate(604 176)" opacity="0.30">
-                <path d="M28 35 C25 13, 40 0, 58 0 C76 0, 91 13, 88 35 C103 49, 105 78, 93 94 L23 94 C11 78, 13 49, 28 35 Z" fill="none" stroke="url(#artifactFlow2)" stroke-width="2" />
-                <path d="M39 94 L33 114 H63 L58 94" fill="none" stroke="url(#artifactFlow2)" stroke-width="2" />
-              </g>
+              <circle cx="43" cy="356" r="5" fill="#80e8ff" opacity="0.36" />
+              <circle cx="330" cy="345" r="5" fill="#55d9cb" opacity="0.30" />
+              <circle cx="742" cy="324" r="5" fill="#f2c66d" opacity="0.32" />
+              <circle cx="420" cy="782" r="5" fill="#6674e8" opacity="0.24" />
             </svg>
           </div>
 
           <header class="artifact-header">
+            <div class="header-art" aria-hidden="true">
+              <svg viewBox="0 0 794 320" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="headerFlow" x1="0" x2="1">
+                    <stop offset="0%" stop-color="#80e8ff" stop-opacity="0.20" />
+                    <stop offset="48%" stop-color="#ffffff" stop-opacity="0.28" />
+                    <stop offset="100%" stop-color="#f2c66d" stop-opacity="0.20" />
+                  </linearGradient>
+                </defs>
+
+                <path d="M56 104 L748 104 L630 160 L748 216 L56 216 C108 194 132 172 132 160 C132 148 108 126 56 104 Z"
+                      fill="rgba(255,255,255,0.035)"
+                      stroke="rgba(255,255,255,0.16)"
+                      stroke-width="1.5" />
+
+                <path d="M36 160 C170 132, 254 168, 360 158 S560 138, 748 160" fill="none" stroke="url(#headerFlow)" stroke-width="2.2" />
+                <path d="M74 126 C198 106, 280 136, 396 130 S594 112, 742 126" fill="none" stroke="url(#headerFlow)" stroke-width="1.2" opacity="0.72" />
+                <path d="M74 194 C198 214, 280 184, 396 190 S594 208, 742 194" fill="none" stroke="url(#headerFlow)" stroke-width="1.2" opacity="0.72" />
+
+                <g opacity="0.72">
+                  <circle cx="74" cy="126" r="4" fill="#80e8ff" />
+                  <circle cx="74" cy="194" r="4" fill="#55d9cb" />
+                  <circle cx="396" cy="130" r="4" fill="#ffffff" />
+                  <circle cx="396" cy="190" r="4" fill="#f2c66d" />
+                  <circle cx="742" cy="160" r="5" fill="#80e8ff" />
+                </g>
+              </svg>
+            </div>
+
             <div class="artifact-kicker">
               <span>AOM 2026 | Philadelphia</span>
               <span>Open Innovation PDW</span>
@@ -1049,7 +891,7 @@
             <p class="artifact-subtitle">A personal research agenda for transcending boundaries.</p>
           </header>
 
-          <div class="card-body">
+          <div class="artifact-body">
             <p class="instruction">
               Based on today’s roundtables, cross-thematic discussion, and people you met, list up to three research directions you would like to pursue.
             </p>
@@ -1128,7 +970,6 @@
     const statusEl = document.getElementById("status");
     const pdfBtn = document.getElementById("downloadPdf");
     const pngBtn = document.getElementById("downloadPng");
-    const printBtn = document.getElementById("printBtn");
     const clearBtn = document.getElementById("clearBtn");
 
     const placeholderMarkup = `
@@ -1145,7 +986,6 @@
     function setExportBusy(isBusy) {
       pdfBtn.disabled = isBusy;
       pngBtn.disabled = isBusy;
-      printBtn.disabled = isBusy;
       clearBtn.disabled = isBusy;
     }
 
@@ -1168,16 +1008,19 @@
     }
 
     async function waitForExportLibraries() {
-      const maxAttempts = 40;
       let attempts = 0;
 
-      while ((!window.html2canvas || !window.jspdf) && attempts < maxAttempts) {
-        await new Promise(resolve => setTimeout(resolve, 125));
+      while ((!window.html2canvas || !window.jspdf) && attempts < 50) {
+        await new Promise(resolve => setTimeout(resolve, 120));
         attempts += 1;
       }
 
       if (!window.html2canvas) {
         throw new Error("The PNG export library did not load. Refresh the page and try again.");
+      }
+
+      if (!window.jspdf) {
+        throw new Error("The PDF export library did not load. Refresh the page and try again.");
       }
     }
 
@@ -1200,21 +1043,19 @@
       await new Promise(resolve => requestAnimationFrame(resolve));
 
       try {
-        const canvas = await html2canvas(clone, {
+        return await html2canvas(clone, {
           scale: 3,
-          backgroundColor: "#fffaf6",
+          backgroundColor: "#ffffff",
           useCORS: true,
           allowTaint: false,
           logging: false,
           width: 794,
           height: 1123,
-          windowWidth: 1200,
+          windowWidth: 1280,
           windowHeight: 1400,
           scrollX: 0,
           scrollY: 0
         });
-
-        return canvas;
       } finally {
         wrapper.remove();
       }
@@ -1223,6 +1064,7 @@
     function downloadBlob(blob, filename) {
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
+
       link.href = url;
       link.download = filename;
       document.body.appendChild(link);
@@ -1239,19 +1081,31 @@
 
         const canvas = await renderArtifactToCanvas();
 
-        canvas.toBlob(blob => {
-          if (!blob) {
-            setStatus("PNG export failed. Use Print as a fallback.");
-            setExportBusy(false);
-            return;
-          }
+        if (canvas.toBlob) {
+          canvas.toBlob(blob => {
+            if (!blob) {
+              const link = document.createElement("a");
+              link.href = canvas.toDataURL("image/png");
+              link.download = getFileName("png");
+              link.click();
+            } else {
+              downloadBlob(blob, getFileName("png"));
+            }
 
-          downloadBlob(blob, getFileName("png"));
+            setStatus("PNG downloaded.");
+            setExportBusy(false);
+          }, "image/png", 1);
+        } else {
+          const link = document.createElement("a");
+          link.href = canvas.toDataURL("image/png");
+          link.download = getFileName("png");
+          link.click();
+
           setStatus("PNG downloaded.");
           setExportBusy(false);
-        }, "image/png", 1);
+        }
       } catch (error) {
-        setStatus(error.message || "PNG export failed. Use Print as a fallback.");
+        setStatus(error.message || "PNG export failed. Refresh the page and try again.");
         setExportBusy(false);
       }
     }
@@ -1261,26 +1115,23 @@
         setExportBusy(true);
         setStatus("Preparing PDF...");
 
-        await waitForExportLibraries();
-
         const canvas = await renderArtifactToCanvas();
         const imageData = canvas.toDataURL("image/png", 1);
-
         const { jsPDF } = window.jspdf;
 
         const pdf = new jsPDF({
           orientation: "portrait",
           unit: "mm",
           format: "a4",
-          compress: true
+          compress: false
         });
 
-        pdf.addImage(imageData, "PNG", 0, 0, 210, 297, undefined, "FAST");
+        pdf.addImage(imageData, "PNG", 0, 0, 210, 297);
         pdf.save(getFileName("pdf"));
 
         setStatus("PDF downloaded.");
       } catch (error) {
-        setStatus(error.message || "PDF export failed. Use Print as a fallback.");
+        setStatus(error.message || "PDF export failed. Refresh the page and try again.");
       } finally {
         setExportBusy(false);
       }
@@ -1300,101 +1151,648 @@
       input.addEventListener("input", updatePreview);
     });
 
-    pdfBtn.addEventListener("click", downloadPDF);
     pngBtn.addEventListener("click", downloadPNG);
-    printBtn.addEventListener("click", () => window.print());
+    pdfBtn.addEventListener("click", downloadPDF);
     clearBtn.addEventListener("click", clearFields);
 
     updatePreview();
 
-    const canvas = document.getElementById("particleCanvas");
-    const ctx = canvas.getContext("2d");
+   <script>
+  const canvas = document.getElementById("funnelCanvas");
+  const ctx = canvas.getContext("2d");
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    let particles = [];
-    let width = 0;
-    let height = 0;
-    let dpr = 1;
+  let width = 0;
+  let height = 0;
+  let dpr = 1;
+  let particles = [];
+  let ambientNodes = [];
+  let currentGeometry = null;
 
-    function resizeCanvas() {
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
-      width = window.innerWidth;
-      height = window.innerHeight;
+  function lerp(a, b, t) {
+    return a + (b - a) * t;
+  }
 
-      canvas.width = Math.floor(width * dpr);
-      canvas.height = Math.floor(height * dpr);
-      canvas.style.width = `${width}px`;
-      canvas.style.height = `${height}px`;
+  function smoothstep(t) {
+    return t * t * (3 - 2 * t);
+  }
 
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  function cubic(p0, p1, p2, p3, t) {
+    const u = 1 - t;
+    const tt = t * t;
+    const uu = u * u;
+    const uuu = uu * u;
+    const ttt = tt * t;
 
-      const count = Math.min(110, Math.max(55, Math.floor(width * height / 22000)));
-      particles = Array.from({ length: count }, () => ({
-        x: Math.random() * width,
-        y: Math.random() * height,
-        r: Math.random() * 1.8 + 0.7,
-        vx: (Math.random() - 0.5) * 0.18,
-        vy: (Math.random() - 0.5) * 0.18,
-        alpha: Math.random() * 0.45 + 0.18,
-        hue: Math.random() > 0.55 ? "cyan" : Math.random() > 0.5 ? "gold" : "rose"
-      }));
-    }
+    return {
+      x: uuu * p0.x + 3 * uu * t * p1.x + 3 * u * tt * p2.x + ttt * p3.x,
+      y: uuu * p0.y + 3 * uu * t * p1.y + 3 * u * tt * p2.y + ttt * p3.y
+    };
+  }
 
-    function particleColor(p, alphaMultiplier = 1) {
-      const alpha = p.alpha * alphaMultiplier;
+  function horizontalFunnelGeometry() {
+    const centerY = height * 0.54;
+    const leftX = -width * 0.08;
+    const rightX = width * 1.04;
+    const throatX = width * 0.64;
 
-      if (p.hue === "cyan") return `rgba(102, 231, 255, ${alpha})`;
-      if (p.hue === "gold") return `rgba(255, 189, 80, ${alpha})`;
-      return `rgba(255, 115, 165, ${alpha})`;
-    }
+    const startHalf = Math.min(height * 0.34, 228);
+    const throatHalf = Math.max(62, Math.min(height * 0.10, 86));
+    const endHalf = Math.min(height * 0.22, 148);
 
-    function animateParticles() {
-      ctx.clearRect(0, 0, width, height);
-
-      for (let i = 0; i < particles.length; i++) {
-        const p = particles[i];
-
-        p.x += p.vx;
-        p.y += p.vy;
-
-        if (p.x < -20) p.x = width + 20;
-        if (p.x > width + 20) p.x = -20;
-        if (p.y < -20) p.y = height + 20;
-        if (p.y > height + 20) p.y = -20;
-
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = particleColor(p, 1);
-        ctx.fill();
-
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r * 5.5, 0, Math.PI * 2);
-        ctx.fillStyle = particleColor(p, 0.12);
-        ctx.fill();
-
-        for (let j = i + 1; j < particles.length; j++) {
-          const q = particles[j];
-          const dx = p.x - q.x;
-          const dy = p.y - q.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-
-          if (dist < 118) {
-            const opacity = (1 - dist / 118) * 0.10;
-            ctx.beginPath();
-            ctx.moveTo(p.x, p.y);
-            ctx.lineTo(q.x, q.y);
-            ctx.strokeStyle = `rgba(255, 255, 255, ${opacity})`;
-            ctx.lineWidth = 1;
-            ctx.stroke();
-          }
-        }
+    function halfAt(x) {
+      if (x <= throatX) {
+        const t = smoothstep((x - leftX) / (throatX - leftX));
+        return lerp(startHalf, throatHalf, t);
       }
 
-      requestAnimationFrame(animateParticles);
+      const t = smoothstep((x - throatX) / (rightX - throatX));
+      return lerp(throatHalf, endHalf, t);
     }
 
-    window.addEventListener("resize", resizeCanvas);
-    resizeCanvas();
-    animateParticles();
+    function topAt(x) {
+      return centerY - halfAt(x) + Math.sin((x / width) * Math.PI * 1.45) * 3;
+    }
+
+    function bottomAt(x) {
+      return centerY + halfAt(x) + Math.sin((x / width) * Math.PI * 1.45 + 0.9) * 3;
+    }
+
+    const topTs = [0.08, 0.17, 0.27, 0.39, 0.52, 0.65, 0.78, 0.90];
+    const bottomTs = [0.11, 0.22, 0.33, 0.46, 0.59, 0.72, 0.84, 0.95];
+
+    const nodes = [];
+
+    topTs.forEach((t, idx) => {
+      const x = lerp(leftX + 60, rightX - 60, t);
+      nodes.push({
+        x,
+        y: topAt(x),
+        side: "top",
+        hue: idx % 3 === 0 ? "gold" : idx % 3 === 1 ? "cyan" : "teal"
+      });
+    });
+
+    bottomTs.forEach((t, idx) => {
+      const x = lerp(leftX + 60, rightX - 60, t);
+      nodes.push({
+        x,
+        y: bottomAt(x),
+        side: "bottom",
+        hue: idx % 3 === 0 ? "teal" : idx % 3 === 1 ? "gold" : "cyan"
+      });
+    });
+
+    return {
+      centerY,
+      leftX,
+      rightX,
+      throatX,
+      startHalf,
+      throatHalf,
+      endHalf,
+      halfAt,
+      topAt,
+      bottomAt,
+      nodes
+    };
+  }
+
+  function colorForHue(hue, alpha) {
+    if (hue === "gold") return `rgba(242, 198, 109, ${alpha})`;
+    if (hue === "teal") return `rgba(85, 217, 203, ${alpha})`;
+    return `rgba(128, 232, 255, ${alpha})`;
+  }
+
+  function nodeIndexes(side, minX = -Infinity, maxX = Infinity) {
+    if (!currentGeometry) return [0];
+
+    const matches = currentGeometry.nodes
+      .map((node, index) => ({ node, index }))
+      .filter(item => item.node.side === side && item.node.x >= minX && item.node.x <= maxX)
+      .map(item => item.index);
+
+    if (matches.length) return matches;
+
+    return currentGeometry.nodes
+      .map((node, index) => ({ node, index }))
+      .filter(item => item.node.side === side)
+      .map(item => item.index);
+  }
+
+  function randomNodeIndex(side, minX = -Infinity, maxX = Infinity) {
+    const indexes = nodeIndexes(side, minX, maxX);
+    return indexes[Math.floor(Math.random() * indexes.length)];
+  }
+
+  function insidePoint(g, x, lane) {
+    const top = g.topAt(x);
+    const bottom = g.bottomAt(x);
+
+    return {
+      x,
+      y: lerp(top, bottom, 0.5 + lane * 0.28)
+    };
+  }
+
+  function createParticle() {
+    const r = Math.random();
+
+    let type = "through";
+
+    if (r < 0.30) type = "through";
+    else if (r < 0.41) type = "topBorderJoin";
+    else if (r < 0.52) type = "bottomBorderJoin";
+    else if (r < 0.62) type = "topInto";
+    else if (r < 0.72) type = "bottomInto";
+    else if (r < 0.82) type = "insideOutTop";
+    else if (r < 0.92) type = "insideOutBottom";
+    else type = Math.random() > 0.5 ? "topTerminate" : "bottomTerminate";
+
+    let targetNode = 0;
+
+    if (type.startsWith("top")) {
+      targetNode = randomNodeIndex("top");
+    }
+
+    if (type.startsWith("bottom")) {
+      targetNode = randomNodeIndex("bottom");
+    }
+
+    if (type === "insideOutTop") {
+      targetNode = randomNodeIndex("top", width * 0.32, width * 0.96);
+    }
+
+    if (type === "insideOutBottom") {
+      targetNode = randomNodeIndex("bottom", width * 0.32, width * 0.96);
+    }
+
+    const isInsideOnly = type === "through";
+    const isOutbound = type === "insideOutTop" || type === "insideOutBottom";
+    const isTerminate = type === "topTerminate" || type === "bottomTerminate";
+
+    let speed;
+
+    if (isInsideOnly) {
+      speed = Math.random() * 0.0072 + 0.0062;
+    } else if (isOutbound) {
+      speed = Math.random() * 0.0024 + 0.0032;
+    } else if (isTerminate) {
+      speed = Math.random() * 0.0012 + 0.0013;
+    } else {
+      speed = Math.random() * 0.0018 + 0.0018;
+    }
+
+    const target = currentGeometry?.nodes?.[targetNode];
+    let startX = currentGeometry ? lerp(currentGeometry.leftX + 120, width * 0.42, Math.random()) : width * 0.22;
+
+    if (target && isOutbound) {
+      const maxStart = Math.max(currentGeometry.leftX + 120, target.x - width * 0.24);
+      startX = lerp(currentGeometry.leftX + 110, maxStart, Math.random());
+    }
+
+    return {
+      type,
+      t: Math.random(),
+      speed,
+      size: Math.random() * 2.2 + 1.2,
+      lane: Math.random() * 2 - 1,
+      targetNode,
+      startX,
+      joinT: Math.random() * 0.74 + 0.12,
+      xOffset: (Math.random() - 0.5) * 360,
+      phase: Math.random() * Math.PI * 2,
+      alpha: Math.random() * 0.34 + 0.54,
+      hue: Math.random() > 0.56 ? "cyan" : Math.random() > 0.45 ? "gold" : "teal"
+    };
+  }
+
+  function resizeCanvas() {
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    width = window.innerWidth;
+    height = window.innerHeight;
+
+    canvas.width = Math.floor(width * dpr);
+    canvas.height = Math.floor(height * dpr);
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
+
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    currentGeometry = horizontalFunnelGeometry();
+
+    const particleCount = Math.min(178, Math.max(96, Math.floor(width * height / 13200)));
+    particles = Array.from({ length: particleCount }, createParticle);
+
+    const nodeCount = Math.min(42, Math.max(24, Math.floor(width * height / 56000)));
+    ambientNodes = Array.from({ length: nodeCount }, () => ({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      r: Math.random() * 2.0 + 1.0,
+      a: Math.random() * 0.20 + 0.08,
+      vx: (Math.random() - 0.5) * 0.065,
+      vy: (Math.random() - 0.5) * 0.065
+    }));
+  }
+
+  function drawAmbientNodes() {
+    ambientNodes.forEach((n, i) => {
+      if (!reduceMotion) {
+        n.x += n.vx;
+        n.y += n.vy;
+      }
+
+      if (n.x < -40) n.x = width + 40;
+      if (n.x > width + 40) n.x = -40;
+      if (n.y < -40) n.y = height + 40;
+      if (n.y > height + 40) n.y = -40;
+
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.r * 4.5, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(128, 232, 255, ${n.a * 0.10})`;
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(128, 232, 255, ${n.a})`;
+      ctx.fill();
+
+      for (let j = i + 1; j < ambientNodes.length; j++) {
+        const q = ambientNodes[j];
+        const dx = n.x - q.x;
+        const dy = n.y - q.y;
+        const d = Math.sqrt(dx * dx + dy * dy);
+
+        if (d < 165) {
+          ctx.beginPath();
+          ctx.moveTo(n.x, n.y);
+          ctx.lineTo(q.x, q.y);
+          ctx.strokeStyle = `rgba(255, 255, 255, ${(1 - d / 165) * 0.052})`;
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+      }
+    });
+  }
+
+  function drawHorizontalFunnel(g) {
+    ctx.save();
+
+    const fillGrad = ctx.createLinearGradient(g.leftX, 0, g.rightX, 0);
+    fillGrad.addColorStop(0, "rgba(255,255,255,0.014)");
+    fillGrad.addColorStop(0.5, "rgba(128,232,255,0.020)");
+    fillGrad.addColorStop(1, "rgba(242,198,109,0.016)");
+
+    const strokeGrad = ctx.createLinearGradient(g.leftX, 0, g.rightX, 0);
+    strokeGrad.addColorStop(0, "rgba(128,232,255,0.17)");
+    strokeGrad.addColorStop(0.52, "rgba(255,255,255,0.14)");
+    strokeGrad.addColorStop(1, "rgba(242,198,109,0.17)");
+
+    ctx.beginPath();
+    ctx.moveTo(g.leftX, g.topAt(g.leftX));
+
+    for (let x = g.leftX; x <= g.rightX; x += 18) {
+      ctx.lineTo(x, g.topAt(x));
+    }
+
+    for (let x = g.rightX; x >= g.leftX; x -= 18) {
+      ctx.lineTo(x, g.bottomAt(x));
+    }
+
+    ctx.closePath();
+    ctx.fillStyle = fillGrad;
+    ctx.fill();
+    ctx.strokeStyle = strokeGrad;
+    ctx.lineWidth = 1.6;
+    ctx.stroke();
+
+    ctx.beginPath();
+    for (let x = g.leftX; x <= g.rightX; x += 12) {
+      const y = lerp(g.topAt(x), g.bottomAt(x), 0.32) + Math.sin(x * 0.012) * 4;
+      if (x === g.leftX) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    }
+    ctx.strokeStyle = "rgba(128,232,255,0.065)";
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    ctx.beginPath();
+    for (let x = g.leftX; x <= g.rightX; x += 12) {
+      const y = lerp(g.topAt(x), g.bottomAt(x), 0.68) - Math.cos(x * 0.013) * 4;
+      if (x === g.leftX) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    }
+    ctx.strokeStyle = "rgba(255,255,255,0.052)";
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    g.nodes.forEach((node, i) => {
+      const pulse = 0.84 + Math.sin(Date.now() * 0.0032 + i) * 0.16;
+      const glow = 15 + pulse * 8;
+      const core = 3.2 + pulse * 0.8;
+
+      ctx.beginPath();
+      ctx.arc(node.x, node.y, glow, 0, Math.PI * 2);
+      ctx.fillStyle = colorForHue(node.hue, 0.11);
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.arc(node.x, node.y, core * 2.2, 0, Math.PI * 2);
+      ctx.fillStyle = colorForHue(node.hue, 0.38);
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.arc(node.x, node.y, core, 0, Math.PI * 2);
+      ctx.fillStyle = colorForHue(node.hue, 0.95);
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.arc(node.x - 0.7, node.y - 0.7, core * 0.45, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(255,255,255,0.88)";
+      ctx.fill();
+    });
+
+    ctx.restore();
+  }
+
+  function particlePoint(p, g) {
+    const target = g.nodes[p.targetNode % g.nodes.length];
+
+    if (p.type === "through") {
+      const start = {
+        x: -100,
+        y: g.centerY + p.lane * (g.startHalf * 0.50)
+      };
+
+      const end = {
+        x: width + 120,
+        y: g.centerY + p.lane * (g.endHalf * 0.45)
+      };
+
+      return cubic(
+        start,
+        {
+          x: width * 0.24,
+          y: g.centerY + p.lane * (g.startHalf * 0.24) + Math.sin(p.phase) * 28
+        },
+        {
+          x: width * 0.74,
+          y: g.centerY + p.lane * (g.endHalf * 0.18) - Math.cos(p.phase) * 24
+        },
+        end,
+        p.t
+      );
+    }
+
+    if (p.type === "topBorderJoin" || p.type === "bottomBorderJoin") {
+      const isTop = p.type === "topBorderJoin";
+      const split = 0.62;
+
+      const start = {
+        x: target.x + p.xOffset,
+        y: isTop ? -90 : height + 90
+      };
+
+      if (p.t <= split) {
+        const u = p.t / split;
+
+        return cubic(
+          start,
+          {
+            x: start.x + Math.sin(p.phase) * 42,
+            y: isTop ? height * 0.14 : height * 0.86
+          },
+          {
+            x: target.x - 52,
+            y: target.y + (isTop ? -28 : 28)
+          },
+          target,
+          u
+        );
+      }
+
+      const u = (p.t - split) / (1 - split);
+      const end = {
+        x: width + 120,
+        y: g.centerY + p.lane * (g.endHalf * 0.45)
+      };
+
+      return cubic(
+        target,
+        {
+          x: target.x + width * 0.10,
+          y: target.y + (isTop ? 48 : -48)
+        },
+        {
+          x: width * 0.76,
+          y: end.y + Math.sin(p.phase) * 22
+        },
+        end,
+        u
+      );
+    }
+
+    if (p.type === "topInto" || p.type === "bottomInto") {
+      const isTop = p.type === "topInto";
+      const split = 0.62;
+      const joinX = lerp(g.leftX + 120, g.rightX - 180, p.joinT);
+      const join = insidePoint(g, joinX, p.lane * 0.72);
+
+      const start = {
+        x: joinX + p.xOffset,
+        y: isTop ? -95 : height + 95
+      };
+
+      if (p.t <= split) {
+        const u = p.t / split;
+
+        return cubic(
+          start,
+          {
+            x: start.x + Math.sin(p.phase) * 54,
+            y: isTop ? height * 0.16 : height * 0.84
+          },
+          {
+            x: join.x - 60,
+            y: join.y + (isTop ? -34 : 34)
+          },
+          join,
+          u
+        );
+      }
+
+      const u = (p.t - split) / (1 - split);
+      const end = {
+        x: width + 120,
+        y: g.centerY + p.lane * (g.endHalf * 0.46)
+      };
+
+      return cubic(
+        join,
+        {
+          x: join.x + width * 0.10,
+          y: join.y + Math.sin(p.phase) * 18
+        },
+        {
+          x: width * 0.76,
+          y: end.y - Math.cos(p.phase) * 22
+        },
+        end,
+        u
+      );
+    }
+
+    if (p.type === "insideOutTop" || p.type === "insideOutBottom") {
+      const isTop = p.type === "insideOutTop";
+      const split = 0.42;
+
+      const start = insidePoint(g, p.startX, p.lane * 0.60);
+      const exit = target;
+      const end = {
+        x: exit.x + p.xOffset * 0.36,
+        y: isTop ? -110 : height + 110
+      };
+
+      if (p.t <= split) {
+        const u = p.t / split;
+
+        return cubic(
+          start,
+          {
+            x: lerp(start.x, exit.x, 0.32),
+            y: start.y + Math.sin(p.phase) * 20
+          },
+          {
+            x: exit.x - 58,
+            y: exit.y + (isTop ? 34 : -34)
+          },
+          exit,
+          u
+        );
+      }
+
+      const u = (p.t - split) / (1 - split);
+
+      return cubic(
+        exit,
+        {
+          x: exit.x + 36,
+          y: exit.y + (isTop ? -42 : 42)
+        },
+        {
+          x: end.x + Math.sin(p.phase) * 48,
+          y: isTop ? height * 0.16 : height * 0.84
+        },
+        end,
+        u
+      );
+    }
+
+    if (p.type === "topTerminate" || p.type === "bottomTerminate") {
+      const isTop = p.type === "topTerminate";
+      const start = {
+        x: target.x + p.xOffset,
+        y: isTop ? -90 : height + 90
+      };
+
+      return cubic(
+        start,
+        {
+          x: start.x + Math.sin(p.phase) * 44,
+          y: isTop ? height * 0.14 : height * 0.86
+        },
+        {
+          x: target.x - 50,
+          y: target.y + (isTop ? -26 : 26)
+        },
+        target,
+        p.t
+      );
+    }
+
+    return { x: -100, y: g.centerY };
+  }
+
+  function drawParticles(g) {
+    const positions = [];
+
+    particles.forEach(p => {
+      if (!reduceMotion) {
+        p.t += p.speed;
+      }
+
+      if (p.t > 1) {
+        Object.assign(p, createParticle());
+        p.t = 0;
+      }
+
+      const pos = particlePoint(p, g);
+
+      let alpha = p.alpha;
+
+      if ((p.type === "topTerminate" || p.type === "bottomTerminate") && p.t > 0.74) {
+        alpha *= 1 - ((p.t - 0.74) / 0.26) * 0.60;
+      }
+
+      positions.push({ x: pos.x, y: pos.y, p, alpha });
+
+      ctx.beginPath();
+      ctx.arc(pos.x, pos.y, p.size * 7.5, 0, Math.PI * 2);
+      ctx.fillStyle = colorForHue(p.hue, alpha * 0.08);
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.arc(pos.x, pos.y, p.size * 2.5, 0, Math.PI * 2);
+      ctx.fillStyle = colorForHue(p.hue, alpha * 0.34);
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.arc(pos.x, pos.y, p.size, 0, Math.PI * 2);
+      ctx.fillStyle = colorForHue(p.hue, alpha);
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.arc(pos.x - p.size * 0.24, pos.y - p.size * 0.24, p.size * 0.34, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(255, 255, 255, 0.88)";
+      ctx.fill();
+    });
+
+    for (let i = 0; i < positions.length; i++) {
+      for (let j = i + 1; j < positions.length; j++) {
+        const a = positions[i];
+        const b = positions[j];
+        const dx = a.x - b.x;
+        const dy = a.y - b.y;
+        const d = Math.sqrt(dx * dx + dy * dy);
+
+        if (d < 90) {
+          ctx.beginPath();
+          ctx.moveTo(a.x, a.y);
+          ctx.lineTo(b.x, b.y);
+          ctx.strokeStyle = `rgba(128, 232, 255, ${(1 - d / 90) * 0.10})`;
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+      }
+    }
+  }
+
+  function animateBackground() {
+    ctx.clearRect(0, 0, width, height);
+
+    currentGeometry = horizontalFunnelGeometry();
+
+    drawAmbientNodes();
+    drawHorizontalFunnel(currentGeometry);
+    drawParticles(currentGeometry);
+
+    requestAnimationFrame(animateBackground);
+  }
+
+  window.addEventListener("resize", resizeCanvas);
+  resizeCanvas();
+  animateBackground();
+</script>
   </script>
 </body>
 </html>
