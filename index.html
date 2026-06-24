@@ -815,8 +815,8 @@
           <textarea id="input4" rows="2" maxlength="180" placeholder="Example: Scholars, practitioners, or new contacts from today"></textarea>
         </div>
 
-        <p class="privacy-note">
-          If you click Save response, the PDW organizers will store your full name and bucket-list responses in a private workshop sheet. The organizers may analyse aggregated responses and revisit them at AOM 2027 to reflect on how participants developed their research goals. Download works without saving.
+       <p class="privacy-note">
+  The PDW organizers will store your full name and bucket-list responses in a private workshop sheet. The organizers may analyse aggregated responses and revisit them at AOM 2027 to reflect on how participants developed their research goals.
         </p>
 
         <div class="download-title">Download your completed card</div>
@@ -826,7 +826,6 @@
             <button class="primary-btn" type="button" id="downloadPng">Download PNG</button>
             <button class="primary-btn" type="button" id="downloadPdf">Download PDF</button>
           </div>
-          <button class="primary-btn" type="button" id="saveBtn">Save response</button>
           <button class="clear-btn" type="button" id="clearBtn">Clear</button>
         </div>
 
@@ -996,7 +995,6 @@
     const statusEl = document.getElementById("status");
     const pdfBtn = document.getElementById("downloadPdf");
     const pngBtn = document.getElementById("downloadPng");
-    const saveBtn = document.getElementById("saveBtn");
     const clearBtn = document.getElementById("clearBtn");
 
     const placeholderMarkup = `
@@ -1011,10 +1009,9 @@
     }
 
     function setBusy(isBusy) {
-      pdfBtn.disabled = isBusy;
-      pngBtn.disabled = isBusy;
-      saveBtn.disabled = isBusy;
-      clearBtn.disabled = isBusy;
+  pdfBtn.disabled = isBusy;
+  pngBtn.disabled = isBusy;
+  clearBtn.disabled = isBusy;
     }
 
     function updatePreview() {
@@ -1041,46 +1038,45 @@
       };
     }
 
-    async function saveResponse() {
-      if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE")) {
-        setStatus("Google Sheet saving is not configured yet. Add your Apps Script Web App URL in the code.");
-        return;
-      }
+   async function saveResponse() {
+  if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE")) {
+    setStatus("Google Sheet saving is not configured yet. Add your Apps Script Web App URL in the code.");
+    return false;
+  }
 
-      const payload = getPayload();
+  const payload = getPayload();
 
-      if (!payload.fullName) {
-        setStatus("Please enter your full name before saving.");
-        document.getElementById("input1").focus();
-        return;
-      }
+  if (!payload.fullName) {
+    setStatus("Please enter your full name before downloading.");
+    document.getElementById("input1").focus();
+    return false;
+  }
 
-      if (!payload.newOiTopics && !payload.theoriesMethodsSettings && !payload.collaborators) {
-        setStatus("Please complete at least one bucket-list response before saving.");
-        document.getElementById("input2").focus();
-        return;
-      }
+  if (!payload.newOiTopics && !payload.theoriesMethodsSettings && !payload.collaborators) {
+    setStatus("Please complete at least one bucket-list response before downloading.");
+    document.getElementById("input2").focus();
+    return false;
+  }
 
-      try {
-        setBusy(true);
-        setStatus("Saving response...");
+  try {
+    setStatus("Saving response...");
 
-        await fetch(GOOGLE_SCRIPT_URL, {
-          method: "POST",
-          mode: "no-cors",
-          headers: {
-            "Content-Type": "text/plain;charset=utf-8"
-          },
-          body: JSON.stringify(payload)
-        });
+    await fetch(GOOGLE_SCRIPT_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8"
+      },
+      body: JSON.stringify(payload)
+    });
 
-        setStatus("Response sent. You may now download your card.");
-      } catch (error) {
-        setStatus("Saving failed. Please try again, or download your card without saving.");
-      } finally {
-        setBusy(false);
-      }
-    }
+    setStatus("Response saved. Preparing download...");
+    return true;
+  } catch (error) {
+    setStatus("Saving failed. Please try again.");
+    return false;
+  }
+}
 
     function getFileName(extension) {
       const date = new Date().toISOString().slice(0, 10);
@@ -1155,67 +1151,81 @@
     }
 
     async function downloadPNG() {
-      try {
-        setBusy(true);
-        setStatus("Preparing high-resolution PNG...");
+  try {
+    setBusy(true);
 
-        const canvas = await renderArtifactToCanvas();
+    const saved = await saveResponse();
+    if (!saved) {
+      setBusy(false);
+      return;
+    }
 
-        if (canvas.toBlob) {
-          canvas.toBlob(blob => {
-            if (!blob) {
-              const link = document.createElement("a");
-              link.href = canvas.toDataURL("image/png");
-              link.download = getFileName("png");
-              link.click();
-            } else {
-              downloadBlob(blob, getFileName("png"));
-            }
+    setStatus("Preparing high-resolution PNG...");
 
-            setStatus("PNG downloaded.");
-            setBusy(false);
-          }, "image/png", 1);
-        } else {
+    const canvas = await renderArtifactToCanvas();
+
+    if (canvas.toBlob) {
+      canvas.toBlob(blob => {
+        if (!blob) {
           const link = document.createElement("a");
           link.href = canvas.toDataURL("image/png");
           link.download = getFileName("png");
           link.click();
-
-          setStatus("PNG downloaded.");
-          setBusy(false);
+        } else {
+          downloadBlob(blob, getFileName("png"));
         }
-      } catch (error) {
-        setStatus(error.message || "PNG export failed. Refresh the page and try again.");
+
+        setStatus("Response saved and PNG downloaded.");
         setBusy(false);
-      }
+      }, "image/png", 1);
+    } else {
+      const link = document.createElement("a");
+      link.href = canvas.toDataURL("image/png");
+      link.download = getFileName("png");
+      link.click();
+
+      setStatus("Response saved and PNG downloaded.");
+      setBusy(false);
+    }
+  } catch (error) {
+    setStatus(error.message || "PNG export failed. Refresh the page and try again.");
+    setBusy(false);
+  }
+}
+
+  async function downloadPDF() {
+  try {
+    setBusy(true);
+
+    const saved = await saveResponse();
+    if (!saved) {
+      setBusy(false);
+      return;
     }
 
-    async function downloadPDF() {
-      try {
-        setBusy(true);
-        setStatus("Preparing PDF...");
+    setStatus("Preparing PDF...");
 
-        const canvas = await renderArtifactToCanvas();
-        const imageData = canvas.toDataURL("image/png", 1);
-        const { jsPDF } = window.jspdf;
+    const canvas = await renderArtifactToCanvas();
+    const imageData = canvas.toDataURL("image/png", 1);
+    const { jsPDF } = window.jspdf;
 
-        const pdf = new jsPDF({
-          orientation: "portrait",
-          unit: "mm",
-          format: "a4",
-          compress: false
-        });
+    const pdf = new jsPDF({
+      orientation: "portrait",
+      unit: "mm",
+      format: "a4",
+      compress: false
+    });
 
-        pdf.addImage(imageData, "PNG", 0, 0, 210, 297);
-        pdf.save(getFileName("pdf"));
+    pdf.addImage(imageData, "PNG", 0, 0, 210, 297);
+    pdf.save(getFileName("pdf"));
 
-        setStatus("PDF downloaded.");
-      } catch (error) {
-        setStatus(error.message || "PDF export failed. Refresh the page and try again.");
-      } finally {
-        setBusy(false);
-      }
-    }
+    setStatus("Response saved and PDF downloaded.");
+  } catch (error) {
+    setStatus(error.message || "PDF export failed. Refresh the page and try again.");
+  } finally {
+    setBusy(false);
+  }
+}
 
     function clearFields() {
       fields.forEach(({ input }) => {
@@ -1233,7 +1243,6 @@
 
     pngBtn.addEventListener("click", downloadPNG);
     pdfBtn.addEventListener("click", downloadPDF);
-    saveBtn.addEventListener("click", saveResponse);
     clearBtn.addEventListener("click", clearFields);
 
     updatePreview();
