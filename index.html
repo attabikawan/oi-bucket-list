@@ -12,26 +12,15 @@
   <style>
     :root {
       --bg-0: #06101d;
-      --bg-1: #0b1e34;
-      --bg-2: #102f4b;
-      --bg-3: #163e5f;
-
       --ink: #142136;
-      --ink-2: #2b3b52;
       --muted: #66758b;
-
-      --paper: #fbfdff;
-      --paper-warm: #fffaf3;
       --white: #ffffff;
-
       --teal: #55d9cb;
       --cyan: #80e8ff;
       --blue: #4d92ff;
       --indigo: #6674e8;
       --gold: #f2c66d;
-
       --shadow: 0 28px 90px rgba(0, 8, 24, 0.28);
-      --soft-shadow: 0 18px 48px rgba(13, 26, 46, 0.16);
       --radius-xl: 36px;
       --focus: 0 0 0 4px rgba(128, 232, 255, 0.34);
     }
@@ -250,10 +239,10 @@
       font-variant-numeric: tabular-nums;
     }
 
-    textarea {
+    textarea,
+    input[type="text"] {
       width: 100%;
-      min-height: 76px;
-      resize: vertical;
+      min-height: 50px;
       border: 1px solid rgba(19, 32, 51, 0.14);
       border-radius: 18px;
       padding: 14px 15px;
@@ -267,7 +256,13 @@
       transition: border-color 160ms ease, box-shadow 160ms ease;
     }
 
-    textarea:focus {
+    textarea {
+      min-height: 72px;
+      resize: vertical;
+    }
+
+    textarea:focus,
+    input[type="text"]:focus {
       border-color: rgba(85, 217, 203, 0.95);
       box-shadow: var(--focus), 0 12px 30px rgba(13, 26, 46, 0.09);
     }
@@ -401,7 +396,7 @@
 
     .artifact-header {
       position: relative;
-      padding: 38px 42px 34px;
+      padding: 34px 42px 28px;
       color: #ffffff;
       background:
         radial-gradient(circle at 22% 22%, rgba(85, 217, 203, 0.23), transparent 30%),
@@ -442,7 +437,7 @@
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin-bottom: 23px;
+      margin-bottom: 18px;
     }
 
     .artifact-kicker span {
@@ -472,8 +467,8 @@
       margin: 0;
       max-width: 680px;
       color: #ffffff;
-      font-size: clamp(2.25rem, 5.15vw, 4.05rem);
-      line-height: 0.96;
+      font-size: clamp(2.05rem, 5vw, 3.75rem);
+      line-height: 0.98;
       letter-spacing: -0.065em;
       font-weight: 950;
       text-wrap: balance;
@@ -486,38 +481,38 @@
     .artifact-subtitle {
       position: relative;
       z-index: 2;
-      margin: 18px 0 0;
+      margin: 14px 0 0;
       max-width: 560px;
       color: rgba(239, 249, 255, 0.84);
-      font-size: 0.99rem;
-      line-height: 1.5;
+      font-size: 0.96rem;
+      line-height: 1.45;
     }
 
     .artifact-body {
       position: relative;
       flex: 1;
-      padding: 30px 42px 20px;
+      padding: 24px 42px 14px;
     }
 
     .instruction {
       position: relative;
-      margin: 0 0 22px;
-      padding: 20px 23px 20px 25px;
-      border-radius: 23px;
+      margin: 0 0 16px;
+      padding: 16px 22px 16px 25px;
+      border-radius: 22px;
       color: #26354c;
       background: rgba(255, 255, 255, 0.88);
       border: 1px solid rgba(19, 32, 51, 0.10);
       box-shadow: 0 16px 42px rgba(13, 26, 46, 0.08);
-      line-height: 1.58;
-      font-size: 1rem;
+      line-height: 1.5;
+      font-size: 0.96rem;
     }
 
     .instruction::before {
       content: "";
       position: absolute;
       left: 0;
-      top: 19px;
-      bottom: 19px;
+      top: 17px;
+      bottom: 17px;
       width: 5px;
       border-radius: 999px;
       background: linear-gradient(180deg, var(--teal), var(--cyan), var(--gold));
@@ -525,22 +520,22 @@
 
     .items {
       display: grid;
-      gap: 17px;
+      gap: 12px;
     }
 
     .item {
       position: relative;
       display: grid;
-      grid-template-columns: 50px 1fr;
-      gap: 17px;
-      min-height: 118px;
-      padding: 20px 22px;
-      border-radius: 25px;
+      grid-template-columns: 46px 1fr;
+      gap: 15px;
+      min-height: 89px;
+      padding: 16px 19px;
+      border-radius: 23px;
       overflow: hidden;
       background:
         linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(248, 253, 255, 0.86));
       border: 1px solid rgba(19, 32, 51, 0.10);
-      box-shadow: 0 16px 40px rgba(13, 26, 46, 0.075);
+      box-shadow: 0 14px 34px rgba(13, 26, 46, 0.07);
     }
 
     .item::before {
@@ -548,10 +543,10 @@
       position: absolute;
       right: -48px;
       top: -60px;
-      width: 165px;
-      height: 165px;
+      width: 150px;
+      height: 150px;
       border-radius: 999px;
-      background: radial-gradient(circle, rgba(128, 232, 255, 0.18), transparent 66%);
+      background: radial-gradient(circle, rgba(128, 232, 255, 0.16), transparent 66%);
     }
 
     .item::after {
@@ -565,11 +560,11 @@
     }
 
     .number {
-      width: 50px;
-      height: 50px;
+      width: 46px;
+      height: 46px;
       display: grid;
       place-items: center;
-      border-radius: 17px;
+      border-radius: 16px;
       color: #102033;
       font-weight: 950;
       background: #fff0bd;
@@ -582,22 +577,23 @@
     .item-title {
       position: relative;
       z-index: 2;
-      margin: 0 0 12px;
+      margin: 0 0 8px;
       color: #142038;
       font-weight: 900;
       letter-spacing: -0.018em;
-      line-height: 1.25;
+      line-height: 1.22;
+      font-size: 0.96rem;
     }
 
     .answer {
       position: relative;
       z-index: 2;
-      min-height: 45px;
+      min-height: 34px;
       display: flex;
       align-items: center;
       color: #344258;
-      font-size: 1rem;
-      line-height: 1.52;
+      font-size: 0.95rem;
+      line-height: 1.42;
       white-space: pre-wrap;
       overflow-wrap: anywhere;
     }
@@ -605,8 +601,8 @@
     .placeholder-lines {
       width: 100%;
       display: grid;
-      gap: 13px;
-      padding-top: 5px;
+      gap: 10px;
+      padding-top: 4px;
     }
 
     .placeholder-lines span {
@@ -620,10 +616,10 @@
       justify-content: space-between;
       gap: 18px;
       align-items: flex-end;
-      padding: 0 42px 34px;
+      padding: 0 42px 30px;
       color: #5e6d83;
-      font-size: 0.82rem;
-      line-height: 1.35;
+      font-size: 0.80rem;
+      line-height: 1.32;
     }
 
     .footer-strong {
@@ -669,21 +665,21 @@
     }
 
     .export-clone-wrap .artifact-title {
-      font-size: 56px !important;
+      font-size: 50px !important;
     }
 
     .export-clone-wrap .artifact-header {
-      padding-top: 38px !important;
-      padding-bottom: 34px !important;
+      padding-top: 34px !important;
+      padding-bottom: 28px !important;
     }
 
     .export-clone-wrap .artifact-body {
-      padding-top: 30px !important;
-      padding-bottom: 20px !important;
+      padding-top: 24px !important;
+      padding-bottom: 14px !important;
     }
 
     .export-clone-wrap .artifact-footer {
-      padding-bottom: 34px !important;
+      padding-bottom: 30px !important;
     }
 
     .export-clone-wrap * {
@@ -736,7 +732,7 @@
       }
 
       .artifact-title {
-        font-size: clamp(2.1rem, 9vw, 3.2rem);
+        font-size: clamp(2rem, 8vw, 2.9rem);
       }
 
       .artifact-kicker span {
@@ -746,8 +742,8 @@
 
       .item {
         grid-template-columns: 1fr;
-        gap: 12px;
-        padding: 19px;
+        gap: 10px;
+        padding: 17px;
       }
 
       .button-row {
@@ -789,29 +785,39 @@
 
         <div class="field">
           <div class="field-head">
-            <label for="input1">A new OI topic or question I want to explore</label>
-            <span class="counter" id="counter1">0/180</span>
+            <label for="input1">Full Name</label>
+            <span class="counter" id="counter1">0/90</span>
           </div>
-          <textarea id="input1" rows="2" maxlength="180" placeholder="Example: How AI changes boundary work in open innovation ecosystems"></textarea>
+          <input id="input1" type="text" maxlength="90" placeholder="Example: Jane Smith" />
         </div>
 
         <div class="field">
           <div class="field-head">
-            <label for="input2">A theory, method, or empirical setting I want to learn more about</label>
+            <label for="input2">New OI topics I want to explore</label>
             <span class="counter" id="counter2">0/180</span>
           </div>
-          <textarea id="input2" rows="2" maxlength="180" placeholder="Example: Complexity leadership, field experiments, or living labs"></textarea>
+          <textarea id="input2" rows="2" maxlength="180" placeholder="Example: How AI changes boundary work in open innovation ecosystems"></textarea>
         </div>
 
         <div class="field">
           <div class="field-head">
-            <label for="input3">Person(s) I would like to explore the above with</label>
+            <label for="input3">Theories, methods, or empirical settings I want to learn more about</label>
             <span class="counter" id="counter3">0/180</span>
           </div>
-          <textarea id="input3" rows="2" maxlength="180" placeholder="Example: Scholars, practitioners, or new contacts from today"></textarea>
+          <textarea id="input3" rows="2" maxlength="180" placeholder="Example: Complexity leadership, field experiments, or living labs"></textarea>
         </div>
 
-        <p class="privacy-note">Your responses stay in your browser. Nothing is submitted or stored.</p>
+        <div class="field">
+          <div class="field-head">
+            <label for="input4">Person(s) I would like to explore the above with</label>
+            <span class="counter" id="counter4">0/180</span>
+          </div>
+          <textarea id="input4" rows="2" maxlength="180" placeholder="Example: Scholars, practitioners, or new contacts from today"></textarea>
+        </div>
+
+        <p class="privacy-note">
+          If you click Save response, the PDW organizers will store your full name and bucket-list responses in a private workshop sheet. The organizers may analyse aggregated responses and revisit them at AOM 2027 to reflect on how participants developed their research goals. Download works without saving.
+        </p>
 
         <div class="download-title">Download your completed card</div>
 
@@ -820,6 +826,7 @@
             <button class="primary-btn" type="button" id="downloadPng">Download PNG</button>
             <button class="primary-btn" type="button" id="downloadPdf">Download PDF</button>
           </div>
+          <button class="primary-btn" type="button" id="saveBtn">Save response</button>
           <button class="clear-btn" type="button" id="clearBtn">Clear</button>
         </div>
 
@@ -900,7 +907,7 @@
               <section class="item">
                 <div class="number" aria-hidden="true">1</div>
                 <div>
-                  <p class="item-title">A new OI topic or question I want to explore</p>
+                  <p class="item-title">Full Name</p>
                   <div class="answer" id="answer1">
                     <div class="placeholder-lines" aria-label="Empty response line"><span></span><span></span></div>
                   </div>
@@ -910,7 +917,7 @@
               <section class="item">
                 <div class="number" aria-hidden="true">2</div>
                 <div>
-                  <p class="item-title">A theory, method, or empirical setting I want to learn more about</p>
+                  <p class="item-title">New OI topics I want to explore</p>
                   <div class="answer" id="answer2">
                     <div class="placeholder-lines" aria-label="Empty response line"><span></span><span></span></div>
                   </div>
@@ -920,8 +927,18 @@
               <section class="item">
                 <div class="number" aria-hidden="true">3</div>
                 <div>
-                  <p class="item-title">Person(s) I would like to explore the above with</p>
+                  <p class="item-title">Theories, methods, or empirical settings I want to learn more about</p>
                   <div class="answer" id="answer3">
+                    <div class="placeholder-lines" aria-label="Empty response line"><span></span><span></span></div>
+                  </div>
+                </div>
+              </section>
+
+              <section class="item">
+                <div class="number" aria-hidden="true">4</div>
+                <div>
+                  <p class="item-title">Person(s) I would like to explore the above with</p>
+                  <div class="answer" id="answer4">
                     <div class="placeholder-lines" aria-label="Empty response line"><span></span><span></span></div>
                   </div>
                 </div>
@@ -947,29 +964,39 @@
   </main>
 
   <script>
-    const MAX_CHARS = 180;
+    const GOOGLE_SCRIPT_URL = "PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE";
 
     const fields = [
       {
         input: document.getElementById("input1"),
         counter: document.getElementById("counter1"),
-        answer: document.getElementById("answer1")
+        answer: document.getElementById("answer1"),
+        max: 90
       },
       {
         input: document.getElementById("input2"),
         counter: document.getElementById("counter2"),
-        answer: document.getElementById("answer2")
+        answer: document.getElementById("answer2"),
+        max: 180
       },
       {
         input: document.getElementById("input3"),
         counter: document.getElementById("counter3"),
-        answer: document.getElementById("answer3")
+        answer: document.getElementById("answer3"),
+        max: 180
+      },
+      {
+        input: document.getElementById("input4"),
+        counter: document.getElementById("counter4"),
+        answer: document.getElementById("answer4"),
+        max: 180
       }
     ];
 
     const statusEl = document.getElementById("status");
     const pdfBtn = document.getElementById("downloadPdf");
     const pngBtn = document.getElementById("downloadPng");
+    const saveBtn = document.getElementById("saveBtn");
     const clearBtn = document.getElementById("clearBtn");
 
     const placeholderMarkup = `
@@ -983,16 +1010,17 @@
       statusEl.textContent = message || "";
     }
 
-    function setExportBusy(isBusy) {
+    function setBusy(isBusy) {
       pdfBtn.disabled = isBusy;
       pngBtn.disabled = isBusy;
+      saveBtn.disabled = isBusy;
       clearBtn.disabled = isBusy;
     }
 
     function updatePreview() {
-      fields.forEach(({ input, counter, answer }) => {
+      fields.forEach(({ input, counter, answer, max }) => {
         const value = input.value.trim();
-        counter.textContent = `${input.value.length}/${MAX_CHARS}`;
+        counter.textContent = `${input.value.length}/${max}`;
 
         if (value.length > 0) {
           answer.textContent = value;
@@ -1000,6 +1028,58 @@
           answer.innerHTML = placeholderMarkup;
         }
       });
+    }
+
+    function getPayload() {
+      return {
+        timestamp: new Date().toISOString(),
+        fullName: document.getElementById("input1").value.trim(),
+        newOiTopics: document.getElementById("input2").value.trim(),
+        theoriesMethodsSettings: document.getElementById("input3").value.trim(),
+        collaborators: document.getElementById("input4").value.trim(),
+        source: "AOM 2026 Open Innovation PDW Bucket List"
+      };
+    }
+
+    async function saveResponse() {
+      if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE")) {
+        setStatus("Google Sheet saving is not configured yet. Add your Apps Script Web App URL in the code.");
+        return;
+      }
+
+      const payload = getPayload();
+
+      if (!payload.fullName) {
+        setStatus("Please enter your full name before saving.");
+        document.getElementById("input1").focus();
+        return;
+      }
+
+      if (!payload.newOiTopics && !payload.theoriesMethodsSettings && !payload.collaborators) {
+        setStatus("Please complete at least one bucket-list response before saving.");
+        document.getElementById("input2").focus();
+        return;
+      }
+
+      try {
+        setBusy(true);
+        setStatus("Saving response...");
+
+        await fetch(GOOGLE_SCRIPT_URL, {
+          method: "POST",
+          mode: "no-cors",
+          headers: {
+            "Content-Type": "text/plain;charset=utf-8"
+          },
+          body: JSON.stringify(payload)
+        });
+
+        setStatus("Response sent. You may now download your card.");
+      } catch (error) {
+        setStatus("Saving failed. Please try again, or download your card without saving.");
+      } finally {
+        setBusy(false);
+      }
     }
 
     function getFileName(extension) {
@@ -1076,7 +1156,7 @@
 
     async function downloadPNG() {
       try {
-        setExportBusy(true);
+        setBusy(true);
         setStatus("Preparing high-resolution PNG...");
 
         const canvas = await renderArtifactToCanvas();
@@ -1093,7 +1173,7 @@
             }
 
             setStatus("PNG downloaded.");
-            setExportBusy(false);
+            setBusy(false);
           }, "image/png", 1);
         } else {
           const link = document.createElement("a");
@@ -1102,17 +1182,17 @@
           link.click();
 
           setStatus("PNG downloaded.");
-          setExportBusy(false);
+          setBusy(false);
         }
       } catch (error) {
         setStatus(error.message || "PNG export failed. Refresh the page and try again.");
-        setExportBusy(false);
+        setBusy(false);
       }
     }
 
     async function downloadPDF() {
       try {
-        setExportBusy(true);
+        setBusy(true);
         setStatus("Preparing PDF...");
 
         const canvas = await renderArtifactToCanvas();
@@ -1133,7 +1213,7 @@
       } catch (error) {
         setStatus(error.message || "PDF export failed. Refresh the page and try again.");
       } finally {
-        setExportBusy(false);
+        setBusy(false);
       }
     }
 
@@ -1153,6 +1233,7 @@
 
     pngBtn.addEventListener("click", downloadPNG);
     pdfBtn.addEventListener("click", downloadPDF);
+    saveBtn.addEventListener("click", saveResponse);
     clearBtn.addEventListener("click", clearFields);
 
     updatePreview();
@@ -1774,6 +1855,74 @@
           }
         }
       }
+    }
+
+    function resizeCanvas() {
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      width = window.innerWidth;
+      height = window.innerHeight;
+
+      canvas.width = Math.floor(width * dpr);
+      canvas.height = Math.floor(height * dpr);
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
+
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      currentGeometry = horizontalFunnelGeometry();
+
+      const particleCount = Math.min(178, Math.max(96, Math.floor(width * height / 13200)));
+      particles = Array.from({ length: particleCount }, createParticle);
+
+      const nodeCount = Math.min(42, Math.max(24, Math.floor(width * height / 56000)));
+      ambientNodes = Array.from({ length: nodeCount }, () => ({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        r: Math.random() * 2.0 + 1.0,
+        a: Math.random() * 0.20 + 0.08,
+        vx: (Math.random() - 0.5) * 0.065,
+        vy: (Math.random() - 0.5) * 0.065
+      }));
+    }
+
+    function drawAmbientNodes() {
+      ambientNodes.forEach((n, i) => {
+        if (!reduceMotion) {
+          n.x += n.vx;
+          n.y += n.vy;
+        }
+
+        if (n.x < -40) n.x = width + 40;
+        if (n.x > width + 40) n.x = -40;
+        if (n.y < -40) n.y = height + 40;
+        if (n.y > height + 40) n.y = -40;
+
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, n.r * 4.5, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(128, 232, 255, ${n.a * 0.10})`;
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(128, 232, 255, ${n.a})`;
+        ctx.fill();
+
+        for (let j = i + 1; j < ambientNodes.length; j++) {
+          const q = ambientNodes[j];
+          const dx = n.x - q.x;
+          const dy = n.y - q.y;
+          const d = Math.sqrt(dx * dx + dy * dy);
+
+          if (d < 165) {
+            ctx.beginPath();
+            ctx.moveTo(n.x, n.y);
+            ctx.lineTo(q.x, q.y);
+            ctx.strokeStyle = `rgba(255, 255, 255, ${(1 - d / 165) * 0.052})`;
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
+        }
+      });
     }
 
     function animateBackground() {
