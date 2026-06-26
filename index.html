@@ -13,7 +13,6 @@
     :root {
       --bg-0: #06101d;
       --ink: #142136;
-      --muted: #66758b;
       --white: #ffffff;
       --teal: #55d9cb;
       --cyan: #80e8ff;
@@ -213,7 +212,7 @@
     }
 
     .field {
-      margin-bottom: 18px;
+      margin-bottom: 16px;
     }
 
     .field-head {
@@ -239,9 +238,9 @@
       font-variant-numeric: tabular-nums;
     }
 
-   textarea,
-input[type="text"],
-input[type="email"] {
+    textarea,
+    input[type="text"],
+    input[type="email"] {
       width: 100%;
       min-height: 50px;
       border: 1px solid rgba(19, 32, 51, 0.14);
@@ -258,22 +257,22 @@ input[type="email"] {
     }
 
     textarea {
-      min-height: 72px;
+      min-height: 66px;
       resize: vertical;
     }
 
     textarea:focus,
-input[type="text"]:focus,
-input[type="email"]:focus {
+    input[type="text"]:focus,
+    input[type="email"]:focus {
       border-color: rgba(85, 217, 203, 0.95);
       box-shadow: var(--focus), 0 12px 30px rgba(13, 26, 46, 0.09);
     }
 
     .privacy-note {
-      margin: 10px 0 18px;
+      margin: 8px 0 16px;
       color: #5f6f85;
-      font-size: 0.86rem;
-      line-height: 1.45;
+      font-size: 0.82rem;
+      line-height: 1.42;
     }
 
     .download-title {
@@ -398,7 +397,7 @@ input[type="email"]:focus {
 
     .artifact-header {
       position: relative;
-      padding: 34px 42px 28px;
+      padding: 28px 42px 28px;
       color: #ffffff;
       background:
         radial-gradient(circle at 22% 22%, rgba(85, 217, 203, 0.23), transparent 30%),
@@ -414,7 +413,7 @@ input[type="email"]:focus {
       left: 0;
       right: 0;
       bottom: -1px;
-      height: 74px;
+      height: 56px;
       background: linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.10));
       pointer-events: none;
     }
@@ -424,7 +423,7 @@ input[type="email"]:focus {
       inset: 0;
       z-index: 0;
       pointer-events: none;
-      opacity: 0.72;
+      opacity: 0.65;
     }
 
     .header-art svg {
@@ -439,19 +438,19 @@ input[type="email"]:focus {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
     }
 
     .artifact-kicker span {
       display: inline-flex;
       align-items: center;
-      min-height: 28px;
+      min-height: 27px;
       padding: 7px 10px;
       border-radius: 999px;
       color: rgba(255, 255, 255, 0.88);
       background: rgba(255, 255, 255, 0.11);
       border: 1px solid rgba(255, 255, 255, 0.16);
-      font-size: 0.66rem;
+      font-size: 0.63rem;
       font-weight: 900;
       letter-spacing: 0.075em;
       text-transform: uppercase;
@@ -467,54 +466,63 @@ input[type="email"]:focus {
       position: relative;
       z-index: 2;
       margin: 0;
-      max-width: 680px;
+      max-width: 650px;
       color: #ffffff;
-      font-size: clamp(2.05rem, 5vw, 3.75rem);
+      font-size: clamp(2rem, 4.3vw, 3.1rem);
       line-height: 0.98;
-      letter-spacing: -0.065em;
+      letter-spacing: -0.06em;
       font-weight: 950;
       text-wrap: balance;
     }
 
-    .artifact-title span {
+    .artifact-title .title-main {
+      display: block;
+    }
+
+    .artifact-title .title-sub {
+      display: block;
       color: #eafffb;
+      font-size: 0.78em;
+      line-height: 1.05;
+      letter-spacing: -0.048em;
+      margin-top: 3px;
     }
 
     .artifact-subtitle {
       position: relative;
       z-index: 2;
-      margin: 14px 0 0;
+      margin: 13px 0 0;
       max-width: 560px;
       color: rgba(239, 249, 255, 0.84);
-      font-size: 0.96rem;
-      line-height: 1.45;
+      font-size: 0.93rem;
+      line-height: 1.42;
     }
 
     .artifact-body {
       position: relative;
       flex: 1;
-      padding: 24px 42px 14px;
+      padding: 18px 42px 10px;
     }
 
     .instruction {
       position: relative;
-      margin: 0 0 16px;
-      padding: 16px 22px 16px 25px;
-      border-radius: 22px;
+      margin: 0 0 11px;
+      padding: 14px 20px 14px 24px;
+      border-radius: 20px;
       color: #26354c;
       background: rgba(255, 255, 255, 0.88);
       border: 1px solid rgba(19, 32, 51, 0.10);
-      box-shadow: 0 16px 42px rgba(13, 26, 46, 0.08);
-      line-height: 1.5;
-      font-size: 0.96rem;
+      box-shadow: 0 14px 34px rgba(13, 26, 46, 0.08);
+      line-height: 1.42;
+      font-size: 0.88rem;
     }
 
     .instruction::before {
       content: "";
       position: absolute;
       left: 0;
-      top: 17px;
-      bottom: 17px;
+      top: 16px;
+      bottom: 16px;
       width: 5px;
       border-radius: 999px;
       background: linear-gradient(180deg, var(--teal), var(--cyan), var(--gold));
@@ -522,22 +530,22 @@ input[type="email"]:focus {
 
     .items {
       display: grid;
-      gap: 12px;
+      gap: 9px;
     }
 
     .item {
       position: relative;
       display: grid;
-      grid-template-columns: 46px 1fr;
-      gap: 15px;
-      min-height: 89px;
-      padding: 16px 19px;
-      border-radius: 23px;
+      grid-template-columns: 42px 1fr;
+      gap: 14px;
+      min-height: 66px;
+      padding: 12px 17px;
+      border-radius: 20px;
       overflow: hidden;
       background:
         linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(248, 253, 255, 0.86));
       border: 1px solid rgba(19, 32, 51, 0.10);
-      box-shadow: 0 14px 34px rgba(13, 26, 46, 0.07);
+      box-shadow: 0 11px 27px rgba(13, 26, 46, 0.065);
     }
 
     .item::before {
@@ -545,10 +553,10 @@ input[type="email"]:focus {
       position: absolute;
       right: -48px;
       top: -60px;
-      width: 150px;
-      height: 150px;
+      width: 130px;
+      height: 130px;
       border-radius: 999px;
-      background: radial-gradient(circle, rgba(128, 232, 255, 0.16), transparent 66%);
+      background: radial-gradient(circle, rgba(128, 232, 255, 0.14), transparent 66%);
     }
 
     .item::after {
@@ -558,44 +566,44 @@ input[type="email"]:focus {
       right: 22px;
       bottom: 0;
       height: 2px;
-      background: linear-gradient(90deg, transparent, rgba(85, 217, 203, 0.18), rgba(242, 198, 109, 0.18), transparent);
+      background: linear-gradient(90deg, transparent, rgba(85, 217, 203, 0.16), rgba(242, 198, 109, 0.16), transparent);
     }
 
     .number {
-      width: 46px;
-      height: 46px;
+      width: 42px;
+      height: 42px;
       display: grid;
       place-items: center;
-      border-radius: 16px;
+      border-radius: 15px;
       color: #102033;
       font-weight: 950;
       background: #fff0bd;
       border: 1px solid rgba(218, 171, 72, 0.48);
       box-shadow:
-        0 0 0 8px rgba(128, 232, 255, 0.08),
-        0 12px 24px rgba(13, 26, 46, 0.08);
+        0 0 0 7px rgba(128, 232, 255, 0.08),
+        0 10px 22px rgba(13, 26, 46, 0.08);
     }
 
     .item-title {
       position: relative;
       z-index: 2;
-      margin: 0 0 8px;
+      margin: 0 0 6px;
       color: #142038;
       font-weight: 900;
-      letter-spacing: -0.018em;
-      line-height: 1.22;
-      font-size: 0.96rem;
+      letter-spacing: -0.016em;
+      line-height: 1.20;
+      font-size: 0.88rem;
     }
 
     .answer {
       position: relative;
       z-index: 2;
-      min-height: 34px;
+      min-height: 28px;
       display: flex;
       align-items: center;
       color: #344258;
-      font-size: 0.95rem;
-      line-height: 1.42;
+      font-size: 0.88rem;
+      line-height: 1.34;
       white-space: pre-wrap;
       overflow-wrap: anywhere;
     }
@@ -603,8 +611,8 @@ input[type="email"]:focus {
     .placeholder-lines {
       width: 100%;
       display: grid;
-      gap: 10px;
-      padding-top: 4px;
+      gap: 8px;
+      padding-top: 3px;
     }
 
     .placeholder-lines span {
@@ -618,10 +626,10 @@ input[type="email"]:focus {
       justify-content: space-between;
       gap: 18px;
       align-items: flex-end;
-      padding: 0 42px 30px;
+      padding: 0 42px 24px;
       color: #5e6d83;
-      font-size: 0.80rem;
-      line-height: 1.32;
+      font-size: 0.76rem;
+      line-height: 1.28;
     }
 
     .footer-strong {
@@ -667,21 +675,21 @@ input[type="email"]:focus {
     }
 
     .export-clone-wrap .artifact-title {
-      font-size: 50px !important;
+      font-size: 46px !important;
     }
 
     .export-clone-wrap .artifact-header {
-      padding-top: 34px !important;
+      padding-top: 28px !important;
       padding-bottom: 28px !important;
     }
 
     .export-clone-wrap .artifact-body {
-      padding-top: 24px !important;
-      padding-bottom: 14px !important;
+      padding-top: 18px !important;
+      padding-bottom: 10px !important;
     }
 
     .export-clone-wrap .artifact-footer {
-      padding-bottom: 30px !important;
+      padding-bottom: 24px !important;
     }
 
     .export-clone-wrap * {
@@ -734,7 +742,7 @@ input[type="email"]:focus {
       }
 
       .artifact-title {
-        font-size: clamp(2rem, 8vw, 2.9rem);
+        font-size: clamp(1.9rem, 7.2vw, 2.6rem);
       }
 
       .artifact-kicker span {
@@ -744,8 +752,8 @@ input[type="email"]:focus {
 
       .item {
         grid-template-columns: 1fr;
-        gap: 10px;
-        padding: 17px;
+        gap: 9px;
+        padding: 15px;
       }
 
       .button-row {
@@ -755,7 +763,7 @@ input[type="email"]:focus {
       .artifact-footer {
         flex-direction: column;
         align-items: flex-start;
-        padding-bottom: 25px;
+        padding-bottom: 22px;
       }
     }
   </style>
@@ -795,6 +803,14 @@ input[type="email"]:focus {
 
         <div class="field">
           <div class="field-head">
+            <label for="inputEmail">Email address optional</label>
+            <span class="counter" id="counterEmail">0/120</span>
+          </div>
+          <input id="inputEmail" type="email" maxlength="120" placeholder="Example: jane.smith@university.edu" />
+        </div>
+
+        <div class="field">
+          <div class="field-head">
             <label for="input2">New OI topics I want to explore</label>
             <span class="counter" id="counter2">0/180</span>
           </div>
@@ -817,9 +833,9 @@ input[type="email"]:focus {
           <textarea id="input4" rows="2" maxlength="180" placeholder="Example: Scholars, practitioners, or new contacts from today"></textarea>
         </div>
 
-       <p class="privacy-note">
-  The PDW organizers will store your full name, optional email address, and bucket-list responses in a private workshop sheet. The organizers may analyse aggregated responses and revisit them at AOM 2027 to reflect on how participants developed their research goals.
-</p>
+        <p class="privacy-note">
+          The PDW organizers will store your full name and bucket-list responses in a private workshop sheet. The organizers may analyse aggregated responses and revisit them at AOM 2027 to reflect on how participants developed their research goals.
+        </p>
 
         <div class="download-title">Download your completed card</div>
 
@@ -893,7 +909,8 @@ input[type="email"]:focus {
             </div>
 
             <h2 class="artifact-title">
-              My OI Bucket List: <span>What I want to explore after this PDW</span>
+              <span class="title-main">My OI Bucket List:</span>
+              <span class="title-sub">What I want to explore after this PDW</span>
             </h2>
 
             <p class="artifact-subtitle">A personal research agenda for transcending boundaries.</p>
@@ -901,7 +918,7 @@ input[type="email"]:focus {
 
           <div class="artifact-body">
             <p class="instruction">
-              Based on today’s roundtables, cross-thematic discussion, and people you met, list topics, theories, and methods you would like to explore and the people you'd like to collaborate with.
+              Based on today’s roundtables, cross-thematic discussion, and people you met, list up to three research directions you would like to pursue.
             </p>
 
             <div class="items">
@@ -915,16 +932,18 @@ input[type="email"]:focus {
                 </div>
               </section>
 
-              <div class="field">
-  <div class="field-head">
-    <label for="inputEmail">Email address optional</label>
-    <span class="counter" id="counterEmail">0/120</span>
-  </div>
-  <input id="inputEmail" type="email" maxlength="120" placeholder="Example: jane.smith@university.edu" />
-</div>
-
               <section class="item">
                 <div class="number" aria-hidden="true">2</div>
+                <div>
+                  <p class="item-title">Email address optional</p>
+                  <div class="answer" id="answerEmail">
+                    <div class="placeholder-lines" aria-label="Empty response line"><span></span><span></span></div>
+                  </div>
+                </div>
+              </section>
+
+              <section class="item">
+                <div class="number" aria-hidden="true">3</div>
                 <div>
                   <p class="item-title">New OI topics I want to explore</p>
                   <div class="answer" id="answer2">
@@ -934,7 +953,7 @@ input[type="email"]:focus {
               </section>
 
               <section class="item">
-                <div class="number" aria-hidden="true">3</div>
+                <div class="number" aria-hidden="true">4</div>
                 <div>
                   <p class="item-title">Theories, methods, or empirical settings I want to learn more about</p>
                   <div class="answer" id="answer3">
@@ -944,7 +963,7 @@ input[type="email"]:focus {
               </section>
 
               <section class="item">
-                <div class="number" aria-hidden="true">4</div>
+                <div class="number" aria-hidden="true">5</div>
                 <div>
                   <p class="item-title">Person(s) I would like to explore the above with</p>
                   <div class="answer" id="answer4">
@@ -983,6 +1002,12 @@ input[type="email"]:focus {
         max: 90
       },
       {
+        input: document.getElementById("inputEmail"),
+        counter: document.getElementById("counterEmail"),
+        answer: document.getElementById("answerEmail"),
+        max: 120
+      },
+      {
         input: document.getElementById("input2"),
         counter: document.getElementById("counter2"),
         answer: document.getElementById("answer2"),
@@ -1003,12 +1028,10 @@ input[type="email"]:focus {
     ];
 
     const statusEl = document.getElementById("status");
-const pdfBtn = document.getElementById("downloadPdf");
-const pngBtn = document.getElementById("downloadPng");
-const clearBtn = document.getElementById("clearBtn");
-    
-const emailInput = document.getElementById("inputEmail");
-const emailCounter = document.getElementById("counterEmail");
+    const pdfBtn = document.getElementById("downloadPdf");
+    const pngBtn = document.getElementById("downloadPng");
+    const clearBtn = document.getElementById("clearBtn");
+    const emailInput = document.getElementById("inputEmail");
 
     const placeholderMarkup = `
       <div class="placeholder-lines" aria-label="Empty response line">
@@ -1022,9 +1045,9 @@ const emailCounter = document.getElementById("counterEmail");
     }
 
     function setBusy(isBusy) {
-  pdfBtn.disabled = isBusy;
-  pngBtn.disabled = isBusy;
-  clearBtn.disabled = isBusy;
+      pdfBtn.disabled = isBusy;
+      pngBtn.disabled = isBusy;
+      clearBtn.disabled = isBusy;
     }
 
     function updatePreview() {
@@ -1039,65 +1062,63 @@ const emailCounter = document.getElementById("counterEmail");
         }
       });
     }
-function updateEmailCounter() {
-  emailCounter.textContent = `${emailInput.value.length}/120`;
-}
-    
-   function getPayload() {
-  return {
-    timestamp: new Date().toISOString(),
-    fullName: document.getElementById("input1").value.trim(),
-    email: emailInput.value.trim(),
-    newOiTopics: document.getElementById("input2").value.trim(),
-    theoriesMethodsSettings: document.getElementById("input3").value.trim(),
-    collaborators: document.getElementById("input4").value.trim()
-  };
-}
 
-   async function saveResponse() {
-  if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE")) {
-    setStatus("Google Sheet saving is not configured yet. Add your Apps Script Web App URL in the code.");
-    return false;
-  }
+    function getPayload() {
+      return {
+        timestamp: new Date().toISOString(),
+        fullName: document.getElementById("input1").value.trim(),
+        email: emailInput.value.trim(),
+        newOiTopics: document.getElementById("input2").value.trim(),
+        theoriesMethodsSettings: document.getElementById("input3").value.trim(),
+        collaborators: document.getElementById("input4").value.trim()
+      };
+    }
 
-  const payload = getPayload();
+    async function saveResponse() {
+      if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE")) {
+        setStatus("Google Sheet saving is not configured yet. Add your Apps Script Web App URL in the code.");
+        return false;
+      }
 
-  if (!payload.fullName) {
-    setStatus("Please enter your full name before downloading.");
-    document.getElementById("input1").focus();
-    return false;
-  }
-     if (payload.email && !emailInput.checkValidity()) {
-  setStatus("Please enter a valid email address, or leave the email field blank.");
-  emailInput.focus();
-  return false;
-}
+      const payload = getPayload();
 
-  if (!payload.newOiTopics && !payload.theoriesMethodsSettings && !payload.collaborators) {
-    setStatus("Please complete at least one bucket-list response before downloading.");
-    document.getElementById("input2").focus();
-    return false;
-  }
+      if (!payload.fullName) {
+        setStatus("Please enter your full name before downloading.");
+        document.getElementById("input1").focus();
+        return false;
+      }
 
-  try {
-    setStatus("Saving response...");
+      if (payload.email && !emailInput.checkValidity()) {
+        setStatus("Please enter a valid email address, or leave the email field blank.");
+        emailInput.focus();
+        return false;
+      }
 
-    await fetch(GOOGLE_SCRIPT_URL, {
-      method: "POST",
-      mode: "no-cors",
-      headers: {
-        "Content-Type": "text/plain;charset=utf-8"
-      },
-      body: JSON.stringify(payload)
-    });
+      if (!payload.newOiTopics && !payload.theoriesMethodsSettings && !payload.collaborators) {
+        setStatus("Please complete at least one bucket-list response before downloading.");
+        document.getElementById("input2").focus();
+        return false;
+      }
 
-    setStatus("Response saved. Preparing download...");
-    return true;
-  } catch (error) {
-    setStatus("Saving failed. Please try again.");
-    return false;
-  }
-}
+      try {
+        setStatus("Saving response...");
+
+        await fetch(GOOGLE_SCRIPT_URL, {
+          method: "POST",
+          mode: "no-cors",
+          headers: {
+            "Content-Type": "text/plain;charset=utf-8"
+          },
+          body: JSON.stringify(payload)
+        });
+
+        setStatus("Response saved. Preparing download...");
+        return true;
+      } catch (error) {
+        setStatus("Saving failed. Please try again.");
+        return false;
+      }
+    }
 
     function getFileName(extension) {
       const date = new Date().toISOString().slice(0, 10);
@@ -1172,101 +1193,95 @@ function updateEmailCounter() {
     }
 
     async function downloadPNG() {
-  try {
-    setBusy(true);
+      try {
+        setBusy(true);
 
-    const saved = await saveResponse();
-    if (!saved) {
-      setBusy(false);
-      return;
-    }
+        const saved = await saveResponse();
+        if (!saved) {
+          setBusy(false);
+          return;
+        }
 
-    setStatus("Preparing high-resolution PNG...");
+        setStatus("Preparing high-resolution PNG...");
 
-    const canvas = await renderArtifactToCanvas();
+        const canvas = await renderArtifactToCanvas();
 
-    if (canvas.toBlob) {
-      canvas.toBlob(blob => {
-        if (!blob) {
+        if (canvas.toBlob) {
+          canvas.toBlob(blob => {
+            if (!blob) {
+              const link = document.createElement("a");
+              link.href = canvas.toDataURL("image/png");
+              link.download = getFileName("png");
+              link.click();
+            } else {
+              downloadBlob(blob, getFileName("png"));
+            }
+
+            setStatus("Response saved and PNG downloaded.");
+            setBusy(false);
+          }, "image/png", 1);
+        } else {
           const link = document.createElement("a");
           link.href = canvas.toDataURL("image/png");
           link.download = getFileName("png");
           link.click();
-        } else {
-          downloadBlob(blob, getFileName("png"));
+
+          setStatus("Response saved and PNG downloaded.");
+          setBusy(false);
+        }
+      } catch (error) {
+        setStatus(error.message || "PNG export failed. Refresh the page and try again.");
+        setBusy(false);
+      }
+    }
+
+    async function downloadPDF() {
+      try {
+        setBusy(true);
+
+        const saved = await saveResponse();
+        if (!saved) {
+          setBusy(false);
+          return;
         }
 
-        setStatus("Response saved and PNG downloaded.");
+        setStatus("Preparing PDF...");
+
+        const canvas = await renderArtifactToCanvas();
+        const imageData = canvas.toDataURL("image/png", 1);
+        const { jsPDF } = window.jspdf;
+
+        const pdf = new jsPDF({
+          orientation: "portrait",
+          unit: "mm",
+          format: "a4",
+          compress: false
+        });
+
+        pdf.addImage(imageData, "PNG", 0, 0, 210, 297);
+        pdf.save(getFileName("pdf"));
+
+        setStatus("Response saved and PDF downloaded.");
+      } catch (error) {
+        setStatus(error.message || "PDF export failed. Refresh the page and try again.");
+      } finally {
         setBusy(false);
-      }, "image/png", 1);
-    } else {
-      const link = document.createElement("a");
-      link.href = canvas.toDataURL("image/png");
-      link.download = getFileName("png");
-      link.click();
-
-      setStatus("Response saved and PNG downloaded.");
-      setBusy(false);
-    }
-  } catch (error) {
-    setStatus(error.message || "PNG export failed. Refresh the page and try again.");
-    setBusy(false);
-  }
-}
-
-  async function downloadPDF() {
-  try {
-    setBusy(true);
-
-    const saved = await saveResponse();
-    if (!saved) {
-      setBusy(false);
-      return;
+      }
     }
 
-    setStatus("Preparing PDF...");
+    function clearFields() {
+      fields.forEach(({ input }) => {
+        input.value = "";
+      });
 
-    const canvas = await renderArtifactToCanvas();
-    const imageData = canvas.toDataURL("image/png", 1);
-    const { jsPDF } = window.jspdf;
-
-    const pdf = new jsPDF({
-      orientation: "portrait",
-      unit: "mm",
-      format: "a4",
-      compress: false
-    });
-
-    pdf.addImage(imageData, "PNG", 0, 0, 210, 297);
-    pdf.save(getFileName("pdf"));
-
-    setStatus("Response saved and PDF downloaded.");
-  } catch (error) {
-    setStatus(error.message || "PDF export failed. Refresh the page and try again.");
-  } finally {
-    setBusy(false);
-  }
-}
-
-   function clearFields() {
-  fields.forEach(({ input }) => {
-    input.value = "";
-  });
-
-  emailInput.value = "";
-
-  updatePreview();
-  updateEmailCounter();
-  setStatus("");
-  fields[0].input.focus();
-}
+      updatePreview();
+      setStatus("");
+      fields[0].input.focus();
+    }
 
     fields.forEach(({ input }) => {
       input.addEventListener("input", updatePreview);
     });
-
-    emailInput.addEventListener("input", updateEmailCounter);
-updateEmailCounter();
 
     pngBtn.addEventListener("click", downloadPNG);
     pdfBtn.addEventListener("click", downloadPDF);
@@ -1891,74 +1906,6 @@ updateEmailCounter();
           }
         }
       }
-    }
-
-    function resizeCanvas() {
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
-      width = window.innerWidth;
-      height = window.innerHeight;
-
-      canvas.width = Math.floor(width * dpr);
-      canvas.height = Math.floor(height * dpr);
-      canvas.style.width = `${width}px`;
-      canvas.style.height = `${height}px`;
-
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-      currentGeometry = horizontalFunnelGeometry();
-
-      const particleCount = Math.min(178, Math.max(96, Math.floor(width * height / 13200)));
-      particles = Array.from({ length: particleCount }, createParticle);
-
-      const nodeCount = Math.min(42, Math.max(24, Math.floor(width * height / 56000)));
-      ambientNodes = Array.from({ length: nodeCount }, () => ({
-        x: Math.random() * width,
-        y: Math.random() * height,
-        r: Math.random() * 2.0 + 1.0,
-        a: Math.random() * 0.20 + 0.08,
-        vx: (Math.random() - 0.5) * 0.065,
-        vy: (Math.random() - 0.5) * 0.065
-      }));
-    }
-
-    function drawAmbientNodes() {
-      ambientNodes.forEach((n, i) => {
-        if (!reduceMotion) {
-          n.x += n.vx;
-          n.y += n.vy;
-        }
-
-        if (n.x < -40) n.x = width + 40;
-        if (n.x > width + 40) n.x = -40;
-        if (n.y < -40) n.y = height + 40;
-        if (n.y > height + 40) n.y = -40;
-
-        ctx.beginPath();
-        ctx.arc(n.x, n.y, n.r * 4.5, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(128, 232, 255, ${n.a * 0.10})`;
-        ctx.fill();
-
-        ctx.beginPath();
-        ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(128, 232, 255, ${n.a})`;
-        ctx.fill();
-
-        for (let j = i + 1; j < ambientNodes.length; j++) {
-          const q = ambientNodes[j];
-          const dx = n.x - q.x;
-          const dy = n.y - q.y;
-          const d = Math.sqrt(dx * dx + dy * dy);
-
-          if (d < 165) {
-            ctx.beginPath();
-            ctx.moveTo(n.x, n.y);
-            ctx.lineTo(q.x, q.y);
-            ctx.strokeStyle = `rgba(255, 255, 255, ${(1 - d / 165) * 0.052})`;
-            ctx.lineWidth = 1;
-            ctx.stroke();
-          }
-        }
-      });
     }
 
     function animateBackground() {
