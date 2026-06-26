@@ -239,8 +239,9 @@
       font-variant-numeric: tabular-nums;
     }
 
-    textarea,
-    input[type="text"] {
+   textarea,
+input[type="text"],
+input[type="email"] {
       width: 100%;
       min-height: 50px;
       border: 1px solid rgba(19, 32, 51, 0.14);
@@ -262,7 +263,8 @@
     }
 
     textarea:focus,
-    input[type="text"]:focus {
+input[type="text"]:focus,
+input[type="email"]:focus {
       border-color: rgba(85, 217, 203, 0.95);
       box-shadow: var(--focus), 0 12px 30px rgba(13, 26, 46, 0.09);
     }
@@ -816,8 +818,8 @@
         </div>
 
        <p class="privacy-note">
-  The PDW organizers will store your full name and bucket-list responses in a private workshop sheet. The organizers may analyse aggregated responses and revisit them at AOM 2027 to reflect on how participants developed their research goals.
-        </p>
+  The PDW organizers will store your full name, optional email address, and bucket-list responses in a private workshop sheet. The organizers may analyse aggregated responses and revisit them at AOM 2027 to reflect on how participants developed their research goals.
+</p>
 
         <div class="download-title">Download your completed card</div>
 
@@ -913,6 +915,14 @@
                 </div>
               </section>
 
+              <div class="field">
+  <div class="field-head">
+    <label for="inputEmail">Email address optional</label>
+    <span class="counter" id="counterEmail">0/120</span>
+  </div>
+  <input id="inputEmail" type="email" maxlength="120" placeholder="Example: jane.smith@university.edu" />
+</div>
+
               <section class="item">
                 <div class="number" aria-hidden="true">2</div>
                 <div>
@@ -993,9 +1003,12 @@
     ];
 
     const statusEl = document.getElementById("status");
-    const pdfBtn = document.getElementById("downloadPdf");
-    const pngBtn = document.getElementById("downloadPng");
-    const clearBtn = document.getElementById("clearBtn");
+const pdfBtn = document.getElementById("downloadPdf");
+const pngBtn = document.getElementById("downloadPng");
+const clearBtn = document.getElementById("clearBtn");
+    
+const emailInput = document.getElementById("inputEmail");
+const emailCounter = document.getElementById("counterEmail");
 
     const placeholderMarkup = `
       <div class="placeholder-lines" aria-label="Empty response line">
@@ -1026,16 +1039,20 @@
         }
       });
     }
-
-    function getPayload() {
-      return {
-        timestamp: new Date().toISOString(),
-        fullName: document.getElementById("input1").value.trim(),
-        newOiTopics: document.getElementById("input2").value.trim(),
-        theoriesMethodsSettings: document.getElementById("input3").value.trim(),
-        collaborators: document.getElementById("input4").value.trim()
-      };
-    }
+function updateEmailCounter() {
+  emailCounter.textContent = `${emailInput.value.length}/120`;
+}
+    
+   function getPayload() {
+  return {
+    timestamp: new Date().toISOString(),
+    fullName: document.getElementById("input1").value.trim(),
+    email: emailInput.value.trim(),
+    newOiTopics: document.getElementById("input2").value.trim(),
+    theoriesMethodsSettings: document.getElementById("input3").value.trim(),
+    collaborators: document.getElementById("input4").value.trim()
+  };
+}
 
    async function saveResponse() {
   if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE")) {
@@ -1050,6 +1067,11 @@
     document.getElementById("input1").focus();
     return false;
   }
+     if (payload.email && !emailInput.checkValidity()) {
+  setStatus("Please enter a valid email address, or leave the email field blank.");
+  emailInput.focus();
+  return false;
+}
 
   if (!payload.newOiTopics && !payload.theoriesMethodsSettings && !payload.collaborators) {
     setStatus("Please complete at least one bucket-list response before downloading.");
@@ -1226,19 +1248,25 @@
   }
 }
 
-    function clearFields() {
-      fields.forEach(({ input }) => {
-        input.value = "";
-      });
+   function clearFields() {
+  fields.forEach(({ input }) => {
+    input.value = "";
+  });
 
-      updatePreview();
-      setStatus("");
-      fields[0].input.focus();
-    }
+  emailInput.value = "";
+
+  updatePreview();
+  updateEmailCounter();
+  setStatus("");
+  fields[0].input.focus();
+}
 
     fields.forEach(({ input }) => {
       input.addEventListener("input", updatePreview);
     });
+
+    emailInput.addEventListener("input", updateEmailCounter);
+updateEmailCounter();
 
     pngBtn.addEventListener("click", downloadPNG);
     pdfBtn.addEventListener("click", downloadPDF);
