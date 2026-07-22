@@ -268,6 +268,38 @@
       box-shadow: var(--focus), 0 12px 30px rgba(13, 26, 46, 0.09);
     }
 
+    /* Inline form validation */
+    textarea.invalid,
+    input[type="text"].invalid,
+    input[type="email"].invalid {
+      border-color: #d64545 !important;
+      box-shadow:
+        0 0 0 1px rgba(214, 69, 69, 0.16),
+        0 0 0 4px rgba(214, 69, 69, 0.08) !important;
+    }
+
+    textarea.invalid:focus,
+    input[type="text"].invalid:focus,
+    input[type="email"].invalid:focus {
+      border-color: #c62828 !important;
+      box-shadow:
+        0 0 0 1px rgba(198, 40, 40, 0.20),
+        0 0 0 4px rgba(198, 40, 40, 0.12) !important;
+    }
+
+    .field-error {
+      min-height: 0;
+      margin: 0;
+      color: #c62828;
+      font-size: 0.80rem;
+      font-weight: 720;
+      line-height: 1.35;
+    }
+
+    .field-error:not(:empty) {
+      margin-top: 7px;
+    }
+
     .privacy-note {
       margin: 8px 0 16px;
       color: #5f6f85;
@@ -796,7 +828,7 @@
     </section>
 
     <section class="workspace" aria-label="OI bucket list builder">
-      <form class="panel" id="bucketForm">
+      <form class="panel" id="bucketForm" novalidate>
         <h2>Complete your card</h2>
         <p class="hint">Use short phrases. The preview updates live and exports as a polished conference takeaway.</p>
 
@@ -805,7 +837,8 @@
             <label for="input1">Full Name</label>
             <span class="counter" id="counter1">0/90</span>
           </div>
-          <input id="input1" type="text" maxlength="90" placeholder="Example: Jane Smith" />
+          <input id="input1" type="text" maxlength="90" autocomplete="name" placeholder="Example: Jane Smith" aria-describedby="errorInput1" />
+          <p class="field-error" id="errorInput1" aria-live="polite"></p>
         </div>
 
         <div class="field">
@@ -813,7 +846,8 @@
             <label for="inputEmail">Email address (optional)</label>
             <span class="counter" id="counterEmail">0/120</span>
           </div>
-          <input id="inputEmail" type="email" maxlength="120" placeholder="Example: jane.smith@university.edu" />
+          <input id="inputEmail" type="email" maxlength="120" autocomplete="email" inputmode="email" placeholder="Example: jane.smith@university.edu" aria-describedby="errorInputEmail" />
+          <p class="field-error" id="errorInputEmail" aria-live="polite"></p>
         </div>
 
         <div class="field">
@@ -821,7 +855,8 @@
             <label for="input2">New OI topics I want to explore</label>
             <span class="counter" id="counter2">0/180</span>
           </div>
-          <textarea id="input2" rows="2" maxlength="180" placeholder="Example: How AI changes boundary work in open innovation ecosystems"></textarea>
+          <textarea id="input2" rows="2" maxlength="180" placeholder="Example: How AI changes boundary work in open innovation ecosystems" aria-describedby="errorInput2"></textarea>
+          <p class="field-error" id="errorInput2" aria-live="polite"></p>
         </div>
 
         <div class="field">
@@ -829,7 +864,8 @@
             <label for="input3">Theories, methods, or empirical settings I want to learn more about</label>
             <span class="counter" id="counter3">0/180</span>
           </div>
-          <textarea id="input3" rows="2" maxlength="180" placeholder="Example: Complexity leadership, field experiments, or living labs"></textarea>
+          <textarea id="input3" rows="2" maxlength="180" placeholder="Example: Complexity leadership, field experiments, or living labs" aria-describedby="errorInput3"></textarea>
+          <p class="field-error" id="errorInput3" aria-live="polite"></p>
         </div>
 
         <div class="field">
@@ -837,7 +873,8 @@
             <label for="input4">Person(s) I would like to explore the above with</label>
             <span class="counter" id="counter4">0/180</span>
           </div>
-          <textarea id="input4" rows="2" maxlength="180" placeholder="Example: Scholars, practitioners, or new contacts from today"></textarea>
+          <textarea id="input4" rows="2" maxlength="180" placeholder="Example: Scholars, practitioners, or new contacts from today" aria-describedby="errorInput4"></textarea>
+          <p class="field-error" id="errorInput4" aria-live="polite"></p>
         </div>
 
         <p class="privacy-note">
@@ -1040,6 +1077,29 @@
     const clearBtn = document.getElementById("clearBtn");
     const emailInput = document.getElementById("inputEmail");
 
+    const validationElements = {
+      input1: {
+        input: document.getElementById("input1"),
+        error: document.getElementById("errorInput1")
+      },
+      inputEmail: {
+        input: document.getElementById("inputEmail"),
+        error: document.getElementById("errorInputEmail")
+      },
+      input2: {
+        input: document.getElementById("input2"),
+        error: document.getElementById("errorInput2")
+      },
+      input3: {
+        input: document.getElementById("input3"),
+        error: document.getElementById("errorInput3")
+      },
+      input4: {
+        input: document.getElementById("input4"),
+        error: document.getElementById("errorInput4")
+      }
+    };
+
     const placeholderMarkup = `
       <div class="placeholder-lines" aria-label="Empty response line">
         <span></span>
@@ -1070,6 +1130,100 @@
       });
     }
 
+    function showFieldError(fieldKey, message) {
+      const field = validationElements[fieldKey];
+
+      if (!field) return;
+
+      field.input.classList.add("invalid");
+      field.input.setAttribute("aria-invalid", "true");
+      field.error.textContent = message;
+    }
+
+    function clearFieldError(fieldKey) {
+      const field = validationElements[fieldKey];
+
+      if (!field) return;
+
+      field.input.classList.remove("invalid");
+      field.input.removeAttribute("aria-invalid");
+      field.error.textContent = "";
+    }
+
+    function clearBucketListErrors() {
+      clearFieldError("input2");
+      clearFieldError("input3");
+      clearFieldError("input4");
+    }
+
+    function isValidEmail(value) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value);
+    }
+
+    function validateBeforeDownload() {
+      const payload = getPayload();
+      let firstInvalidInput = null;
+      let isValid = true;
+
+      Object.keys(validationElements).forEach(clearFieldError);
+      setStatus("");
+
+      if (!payload.fullName) {
+        showFieldError("input1", "Please enter your full name.");
+        firstInvalidInput = validationElements.input1.input;
+        isValid = false;
+      } else if (payload.fullName.length < 2) {
+        showFieldError("input1", "Please enter a valid full name.");
+        firstInvalidInput = validationElements.input1.input;
+        isValid = false;
+      }
+
+      if (payload.email && !isValidEmail(payload.email)) {
+        showFieldError(
+          "inputEmail",
+          "Please enter a valid email address, such as name@example.com, or leave this field blank."
+        );
+
+        if (!firstInvalidInput) {
+          firstInvalidInput = validationElements.inputEmail.input;
+        }
+
+        isValid = false;
+      }
+
+      const hasBucketListResponse =
+        Boolean(payload.newOiTopics) ||
+        Boolean(payload.theoriesMethodsSettings) ||
+        Boolean(payload.collaborators);
+
+      if (!hasBucketListResponse) {
+        const message = "Please complete at least one bucket-list response.";
+
+        showFieldError("input2", message);
+        showFieldError("input3", message);
+        showFieldError("input4", message);
+
+        if (!firstInvalidInput) {
+          firstInvalidInput = validationElements.input2.input;
+        }
+
+        isValid = false;
+      }
+
+      if (!isValid && firstInvalidInput) {
+        firstInvalidInput.scrollIntoView({
+          behavior: "smooth",
+          block: "center"
+        });
+
+        window.setTimeout(() => {
+          firstInvalidInput.focus({ preventScroll: true });
+        }, 350);
+      }
+
+      return isValid;
+    }
+
     function getPayload() {
       return {
         timestamp: new Date().toISOString(),
@@ -1087,25 +1241,11 @@
         return false;
       }
 
+      if (!validateBeforeDownload()) {
+        return false;
+      }
+
       const payload = getPayload();
-
-      if (!payload.fullName) {
-        setStatus("Please enter your full name before downloading.");
-        document.getElementById("input1").focus();
-        return false;
-      }
-
-      if (payload.email && !emailInput.checkValidity()) {
-        setStatus("Please enter a valid email address, or leave the email field blank.");
-        emailInput.focus();
-        return false;
-      }
-
-      if (!payload.newOiTopics && !payload.theoriesMethodsSettings && !payload.collaborators) {
-        setStatus("Please complete at least one bucket-list response before downloading.");
-        document.getElementById("input2").focus();
-        return false;
-      }
 
       try {
         setStatus("Saving response...");
@@ -1281,13 +1421,40 @@
         input.value = "";
       });
 
+      Object.keys(validationElements).forEach(clearFieldError);
+
       updatePreview();
       setStatus("");
       fields[0].input.focus();
     }
 
     fields.forEach(({ input }) => {
-      input.addEventListener("input", updatePreview);
+      input.addEventListener("input", () => {
+        updatePreview();
+
+        if (input.id === "input1" && input.value.trim().length >= 2) {
+          clearFieldError("input1");
+        }
+
+        if (input.id === "inputEmail") {
+          const value = input.value.trim();
+
+          if (!value || isValidEmail(value)) {
+            clearFieldError("inputEmail");
+          }
+        }
+
+        if (["input2", "input3", "input4"].includes(input.id)) {
+          const hasBucketListResponse =
+            validationElements.input2.input.value.trim() ||
+            validationElements.input3.input.value.trim() ||
+            validationElements.input4.input.value.trim();
+
+          if (hasBucketListResponse) {
+            clearBucketListErrors();
+          }
+        }
+      });
     });
 
     pngBtn.addEventListener("click", downloadPNG);
